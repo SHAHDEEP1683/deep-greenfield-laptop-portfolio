@@ -1,0 +1,3648 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Deep Shah — Software Engineer Portfolio</title>
+  <meta name="description" content="Interactive cinematic software engineering portfolio of Deep Shah — Java, Spring Boot, Microservices, and AWS Backend Developer." />
+  <meta property="og:title" content="Deep Shah — Software Engineer Portfolio" />
+  <meta property="og:description" content="Interactive cinematic software engineering portfolio of Deep Shah — Java, Spring Boot, Microservices, and AWS Backend Developer." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#080b09" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat+Brush&family=Inter+Tight:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --green-900: #061b13;
+      --green-800: #0b2f20;
+      --green-700: #1a5a40;
+      --green-600: #14503a;
+      --mint: #cfeee0;
+      --mint-dim: rgba(207, 238, 224, 0.72);
+      --ink: #0d0f0e;
+      --black: #080b09;
+      --paper: #f5f7f5;
+      --paper-line: rgba(13, 15, 14, 0.16);
+      --white: #ffffff;
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+
+      /* Auto-calibrated laptop screen coordinates in 1440x810 stage space */
+      --screen-left: 358px;
+      --screen-top: 108px;
+      --screen-w: 724px;
+      --screen-h: 458px;
+      --screen-radius: 7px;
+
+      /* Stage scale computed dynamically by JS */
+      --stage-scale: 1;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: linear-gradient(180deg, #080b09 0%, #0b2f20 48%, #14503a 100%);
+      color: var(--mint);
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 0;
+      background: none;
+      color: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--mint);
+      outline-offset: 3px;
+    }
+
+    /* =====================================================================
+       APP SHELL & VIEWPORT STAGE (1440x810 cover-scaled frame)
+       ===================================================================== */
+    .viewport {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(180deg, #080b09 0%, #0b2f20 48%, #14503a 100%);
+      isolation: isolate;
+    }
+
+    /* Subtle studio atmospheric vignette */
+    .viewport::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 12;
+      background:
+        radial-gradient(ellipse 72% 58% at 50% 48%, transparent 52%, rgba(4, 12, 8, 0.56) 100%);
+    }
+
+    .stage-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      perspective: 1400px;
+    }
+
+    .stage {
+      position: relative;
+      width: 1440px;
+      height: 810px;
+      flex: none;
+      transform: scale(var(--stage-scale));
+      transform-origin: center center;
+      will-change: transform, filter, opacity;
+      overflow: hidden;
+      background: linear-gradient(180deg, #080b09 0%, #0b2f20 48%, #14503a 100%);
+    }
+
+    /* =====================================================================
+       HERO LAYER STACK (1440x810 frame, plate 1440x956.25 top -73.125px)
+       ===================================================================== */
+    .hero-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      will-change: transform, opacity, filter;
+      transform-origin: 68% 69%;
+    }
+
+    .hero-plate,
+    .hero-cut-canvas {
+      position: absolute;
+      left: 0;
+      top: -73.125px;
+      width: 1440px;
+      height: 956.25px;
+      display: block;
+      object-fit: cover;
+      object-position: center center;
+      pointer-events: none;
+    }
+
+    .hero-plate {
+      z-index: 1;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Ambient deep-green studio depth gradient behind wordmark */
+    .hero-ambient {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 52% 40% at 50% 24%, rgba(26, 90, 64, 0.24) 0%, transparent 72%),
+        linear-gradient(180deg, rgba(6, 27, 19, 0.34) 0%, transparent 32%, rgba(6, 17, 12, 0.36) 100%);
+    }
+
+    /* Giant DEEP SHAH Wordmark (sits BEHIND Deep Shah's head cutout) */
+    .hero-wordmark-wrap {
+      position: absolute;
+      left: 0;
+      top: 56px;
+      width: 1440px;
+      height: 260px;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(44px);
+      will-change: transform, opacity;
+    }
+
+    .hero-wordmark-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .hero-cut-canvas {
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+      will-change: opacity, transform;
+    }
+
+    .hero-cut-canvas.ready {
+      opacity: 1;
+    }
+
+    /* Handwritten Tagline: Code • Build • Deploy */
+    .hero-tagline {
+      position: absolute;
+      left: 96px;
+      top: 236px;
+      z-index: 4;
+      font-family: 'Caveat Brush', cursive;
+      font-size: 82px;
+      line-height: 1;
+      color: var(--white);
+      letter-spacing: 0.01em;
+      transform: rotate(-8deg);
+      transform-origin: left center;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.18), 0 8px 28px rgba(0, 0, 0, 0.28);
+      white-space: nowrap;
+      pointer-events: none;
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+      will-change: clip-path, opacity, transform;
+    }
+
+    /* Invisible interactive hitbox over the silver laptop in Deep Shah's hand */
+    .hero-laptop-hotspot {
+      position: absolute;
+      left: 745px;
+      top: 425px;
+      width: 440px;
+      height: 280px;
+      z-index: 6;
+      border-radius: 16px;
+      cursor: pointer;
+      background: transparent;
+      transition: box-shadow 0.28s var(--ease-out-expo);
+    }
+
+    .hero-laptop-hotspot:hover::after {
+      opacity: 1;
+      transform: translate(-50%, -4px);
+    }
+
+    .hero-laptop-hotspot::after {
+      content: 'dive into projects ↓';
+      position: absolute;
+      left: 55%;
+      top: 12px;
+      transform: translate(-50%, 6px);
+      padding: 6px 12px;
+      background: rgba(8, 11, 9, 0.84);
+      border: 1px solid rgba(207, 238, 224, 0.28);
+      color: var(--mint);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.22s var(--ease-out-expo);
+    }
+
+    /* =====================================================================
+       DEVELOPER ID BADGE (582x1030 frame units, scaled cleanly in top-right)
+       ===================================================================== */
+    .badge-anchor {
+      position: absolute;
+      right: 112px;
+      top: -18px;
+      width: 582px;
+      height: 1030px;
+      z-index: 7;
+      transform-origin: 50% 0%;
+      /* Scale the 582x1030 canonical badge coordinate system to refined desktop proportions */
+      transform: scale(0.365) translateY(-480px);
+      opacity: 0;
+      pointer-events: auto;
+      will-change: transform, opacity;
+    }
+
+    .badge-pendulum {
+      position: relative;
+      width: 582px;
+      height: 1030px;
+      transform-origin: 50% -40px;
+      will-change: transform;
+      cursor: pointer;
+    }
+
+    /* Woven dark lanyard strap */
+    .badge-lanyard-strap {
+      position: absolute;
+      left: 50%;
+      top: -140px;
+      width: 68px;
+      height: 430px;
+      transform: translateX(-50%);
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.04) 0px,
+          rgba(255, 255, 255, 0.04) 2px,
+          transparent 2px,
+          transparent 6px
+        ),
+        linear-gradient(90deg, #07130e 0%, #103224 46%, #184935 54%, #091811 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(207, 238, 224, 0.14),
+        0 14px 28px rgba(0, 0, 0, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .badge-lanyard-strap span {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.28em;
+      color: rgba(207, 238, 224, 0.52);
+      white-space: nowrap;
+      margin-top: 90px;
+    }
+
+    /* Brushed metal clasp & swivel hook */
+    .badge-clasp {
+      position: absolute;
+      left: 50%;
+      top: 274px;
+      width: 82px;
+      height: 92px;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+
+    .badge-clasp-crimp {
+      width: 82px;
+      height: 28px;
+      border-radius: 5px;
+      background: linear-gradient(180deg, #e5ece8 0%, #9ca8a2 48%, #58635e 100%);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    }
+
+    .badge-clasp-ring {
+      width: 34px;
+      height: 44px;
+      margin: -3px auto 0;
+      border: 8px solid #cfd8d3;
+      border-radius: 18px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .badge-clasp-clip {
+      width: 52px;
+      height: 26px;
+      margin: -10px auto 0;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #eef3f0 0%, #95a29b 60%, #4e5954 100%);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Translucent PVC ID Sleeve */
+    .badge-sleeve {
+      position: absolute;
+      left: 16px;
+      top: 342px;
+      width: 550px;
+      height: 672px;
+      border-radius: 26px;
+      padding: 46px 24px 24px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(255, 255, 255, 0.06) 45%,
+        rgba(207, 238, 224, 0.14) 100%
+      );
+      border: 2px solid rgba(255, 255, 255, 0.34);
+      box-shadow:
+        0 34px 70px rgba(0, 0, 0, 0.56),
+        0 10px 24px rgba(0, 0, 0, 0.36),
+        inset 0 2px 2px rgba(255, 255, 255, 0.42);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: transform 0.22s var(--ease-out-expo), box-shadow 0.22s ease;
+    }
+
+    .badge-pendulum:hover .badge-sleeve {
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.65),
+        0 0 0 2px rgba(207, 238, 224, 0.45),
+        inset 0 2px 2px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Punched slot in top of sleeve */
+    .badge-sleeve::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      width: 96px;
+      height: 18px;
+      transform: translateX(-50%);
+      border-radius: 99px;
+      background: rgba(6, 20, 14, 0.72);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    /* Subtle diagonal plastic sheen */
+    .badge-sleeve::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      pointer-events: none;
+      background: linear-gradient(
+        125deg,
+        rgba(255, 255, 255, 0.24) 0%,
+        rgba(255, 255, 255, 0.04) 28%,
+        transparent 52%,
+        rgba(255, 255, 255, 0.09) 100%
+      );
+    }
+
+    /* Clean White Developer ID Card */
+    .badge-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #fafbfa;
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 26px 28px 22px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+    }
+
+    .badge-card-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 10px;
+    }
+
+    .badge-card-title {
+      font-size: 29px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .badge-card-year {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--green-700);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .badge-card-sub {
+      margin-top: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #2f3b35;
+    }
+
+    .badge-photo-frame {
+      margin-top: 16px;
+      width: 100%;
+      height: 224px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #0b2f20, #061b13);
+      border: 1.5px solid rgba(13, 15, 14, 0.14);
+      position: relative;
+    }
+
+    .badge-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+      display: block;
+    }
+
+    .badge-rows {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      flex: 1;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .badge-row-label {
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #46534d;
+      flex: none;
+    }
+
+    .badge-row-dots {
+      flex: 1;
+      border-bottom: 2px dotted rgba(13, 15, 14, 0.28);
+      transform: translateY(-3px);
+    }
+
+    .badge-row-val {
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      flex: none;
+      text-align: right;
+    }
+
+    .badge-card-footer {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1.5px solid rgba(13, 15, 14, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #45524b;
+    }
+
+    .badge-barcode {
+      display: flex;
+      align-items: stretch;
+      gap: 3px;
+      height: 18px;
+    }
+
+    .badge-barcode i {
+      display: block;
+      background: var(--ink);
+      width: 2px;
+      opacity: 0.82;
+    }
+
+    .badge-barcode i.w { width: 4px; }
+    .badge-barcode i.m { width: 3px; }
+
+    /* =====================================================================
+       TRANSITION LAYER (Video + Procedural 3D Silver Laptop Dive Fallback)
+       ===================================================================== */
+    .trans-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      will-change: opacity;
+    }
+
+    .trans-layer.active {
+      visibility: visible;
+    }
+
+    .trans-video {
+      position: absolute;
+      inset: 0;
+      width: 1440px;
+      height: 810px;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+    }
+
+    /* Procedural 3D perspective flying silver laptop synced to the 1.7s dive curve */
+    .dive-studio-wash {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #080b09 0%, #0b2f20 48%, #14503a 100%);
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .dive-laptop-3d {
+      position: absolute;
+      left: 0;
+      top: -105.47px;
+      width: 1440px;
+      height: 956.25px;
+      transform-origin: 50% 52%;
+      will-change: transform, opacity, filter;
+      opacity: 0;
+    }
+
+    .dive-laptop-3d img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+      /* Feather edges slightly during mid-flight so it floats cleanly over the studio */
+      -webkit-mask-image: radial-gradient(ellipse 68% 72% at 50% 53%, #000 58%, transparent 100%);
+      mask-image: radial-gradient(ellipse 68% 72% at 50% 53%, #000 58%, transparent 100%);
+    }
+
+    /* =====================================================================
+       CASE MODE LAYER (1440x810 frame, casePlate 1440x956.25 top -105.47px)
+       ===================================================================== */
+    .case-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      will-change: opacity, transform, filter;
+    }
+
+    .case-layer.active {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .case-plate {
+      position: absolute;
+      left: 0;
+      top: -105.47px;
+      width: 1440px;
+      height: 956.25px;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Interactive Laptop Screen Window aligned to the exact matte-black bezel */
+    .laptop-screen-slot {
+      position: absolute;
+      left: var(--screen-left);
+      top: var(--screen-top);
+      width: var(--screen-w);
+      height: var(--screen-h);
+      border-radius: var(--screen-radius);
+      overflow: hidden;
+      z-index: 2;
+      background: #060a08;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 1px rgba(207, 238, 224, 0.08);
+    }
+
+    /* Subtle realistic display glass reflection */
+    .laptop-screen-slot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      background: linear-gradient(
+        132deg,
+        rgba(255, 255, 255, 0.045) 0%,
+        transparent 34%,
+        transparent 74%,
+        rgba(207, 238, 224, 0.03) 100%
+      );
+    }
+
+    .screen-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    .screen-slide.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .screen-video,
+    .screen-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .screen-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Crisp screen switch flash */
+    .screen-flash {
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      background: var(--mint);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .screen-click-hint {
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      z-index: 11;
+      padding: 4px 10px;
+      background: rgba(6, 15, 11, 0.78);
+      border: 1px solid rgba(207, 238, 224, 0.18);
+      color: rgba(207, 238, 224, 0.78);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.2s ease, transform 0.2s var(--ease-out-expo);
+      pointer-events: none;
+    }
+
+    .laptop-screen-slot:hover .screen-click-hint {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =====================================================================
+       PUNCHED-PAPER TICKET CARD, DESCRIPTION & ROUND PREV/NEXT CONTROLS
+       ===================================================================== */
+    .case-ui {
+      position: fixed;
+      inset: 0;
+      z-index: 25;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.32s ease, visibility 0.32s ease;
+    }
+
+    .case-ui.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Punched-paper ticket card anchored left of laptop on desktop */
+    .ticket-wrap {
+      position: fixed;
+      left: clamp(28px, 4.2vw, 72px);
+      top: 50%;
+      transform: translateY(-54%);
+      width: clamp(248px, 21vw, 304px);
+      pointer-events: auto;
+      will-change: transform, opacity;
+    }
+
+    .ticket-card {
+      position: relative;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 20px 22px 18px;
+      border-radius: 6px;
+      box-shadow:
+        0 26px 56px rgba(0, 0, 0, 0.48),
+        0 4px 12px rgba(0, 0, 0, 0.24);
+      /* Authentic semicircular side punch notches */
+      -webkit-mask-image:
+        radial-gradient(circle 11px at 0% 54%, transparent 96%, #000 100%),
+        radial-gradient(circle 11px at 100% 54%, transparent 96%, #000 100%);
+      -webkit-mask-composite: source-in;
+      mask-image:
+        radial-gradient(circle 11px at 0% 54%, transparent 96%, #000 100%),
+        radial-gradient(circle 11px at 100% 54%, transparent 96%, #000 100%);
+      mask-composite: intersect;
+      will-change: transform, opacity;
+    }
+
+    .ticket-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #3d4b44;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 10px;
+    }
+
+    .ticket-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(34px, 3vw, 44px);
+      line-height: 0.96;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+
+    .ticket-perforation {
+      margin: 16px -6px 14px;
+      border-top: 2px dashed rgba(13, 15, 14, 0.22);
+    }
+
+    .ticket-rows {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .ticket-rows li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--paper-line);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      color: #18211d;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ticket-rows li:last-child {
+      border-bottom: 0;
+      padding-bottom: 2px;
+    }
+
+    .ticket-rows li::after {
+      content: attr(data-idx);
+      font-size: 10px;
+      font-weight: 700;
+      color: #617068;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Project Description Panel anchored right of laptop on desktop */
+    .project-desc-panel {
+      position: fixed;
+      right: clamp(28px, 4.2vw, 72px);
+      top: 50%;
+      transform: translateY(-48%);
+      width: clamp(250px, 21vw, 310px);
+      pointer-events: auto;
+      will-change: transform, opacity;
+    }
+
+    .project-desc-key {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--mint);
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .project-desc-copy {
+      font-size: 15px;
+      line-height: 1.56;
+      font-weight: 500;
+      color: rgba(242, 250, 246, 0.94);
+      letter-spacing: 0.005em;
+    }
+
+    .project-tech-list {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(207, 238, 224, 0.2);
+      font-size: 12px;
+      line-height: 1.65;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--mint-dim);
+    }
+
+    .project-tech-list span.sep {
+      margin: 0 6px;
+      opacity: 0.45;
+    }
+
+    /* Round Previous / Next Controls */
+    .case-controls {
+      position: fixed;
+      left: 50%;
+      bottom: clamp(20px, 3.2vh, 36px);
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      pointer-events: auto;
+      z-index: 30;
+    }
+
+    .round-nav-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.36);
+      transition:
+        transform 0.18s var(--ease-out-expo),
+        background-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    .round-nav-btn:hover {
+      transform: translateY(-2px) scale(1.06);
+      background: var(--mint);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.46);
+    }
+
+    .round-nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    .round-nav-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .case-counter {
+      min-width: 66px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--mint);
+      font-variant-numeric: tabular-nums;
+      opacity: 0.88;
+    }
+
+    /* =====================================================================
+       VIEWPORT-PINNED NAVIGATION (White Rectangular Tags)
+       ===================================================================== */
+    .site-nav {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      pointer-events: none;
+    }
+
+    .nav-tag {
+      position: fixed;
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      padding: 0 16px;
+      background: var(--white);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      border-radius: 2px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition:
+        background-color 0.16s ease,
+        color 0.16s ease,
+        transform 0.18s var(--ease-out-expo),
+        box-shadow 0.18s ease;
+    }
+
+    .nav-tag:hover {
+      background: var(--ink);
+      color: var(--white);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
+    }
+
+    .nav-tag.is-current {
+      background: var(--mint);
+      color: var(--ink);
+    }
+
+    .nav-tag.is-current:hover {
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    /* Desktop Exact Nav Positions */
+    .nav-profile {
+      top: 26px;
+      left: 28px;
+    }
+
+    .nav-profile:hover { transform: translateY(-2px); }
+
+    .nav-projects {
+      left: 28px;
+      top: 50%;
+      margin-top: -18px;
+    }
+
+    .nav-projects:hover { transform: translateX(4px); }
+
+    .nav-contact {
+      top: 26px;
+      right: 28px;
+    }
+
+    .nav-contact:hover { transform: translateY(-2px); }
+
+    .nav-hire {
+      bottom: 26px;
+      right: 28px;
+    }
+
+    .nav-hire:hover { transform: translateY(-2px); }
+
+    /* Center DEEP SHAH Logo — Fades in ONLY in project mode */
+    .nav-center-logo {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      pointer-events: none;
+      opacity: 0;
+      height: 38px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+      transition:
+        opacity 0.34s var(--ease-out-expo),
+        transform 0.34s var(--ease-out-expo),
+        color 0.18s ease;
+    }
+
+    .nav-center-logo.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    .nav-center-logo:hover {
+      color: var(--mint);
+    }
+
+    /* =====================================================================
+       SCROLL HINT ("explore my work") + IDENTITY LINE
+       ===================================================================== */
+    .hero-bottom-bar {
+      position: fixed;
+      left: 50%;
+      bottom: 26px;
+      transform: translateX(-50%);
+      z-index: 35;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.32s ease, transform 0.32s var(--ease-out-expo);
+    }
+
+    .hero-bottom-bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .hero-bottom-bar.hidden-mode {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateX(-50%) translateY(14px);
+    }
+
+    .scroll-hint-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      background: rgba(8, 11, 9, 0.68);
+      border: 1px solid rgba(207, 238, 224, 0.24);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      border-radius: 2px;
+      transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s var(--ease-out-expo);
+    }
+
+    .scroll-hint-btn:hover {
+      background: var(--white);
+      color: var(--ink);
+      border-color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .scroll-hint-arrow {
+      display: inline-flex;
+      animation: gentleBounce 1.8s ease-in-out infinite;
+    }
+
+    .scroll-hint-arrow svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    .identity-caption {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: rgba(207, 238, 224, 0.72);
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    /* =====================================================================
+       MOBILE-ONLY UI LAYERS (<= 820px)
+       ===================================================================== */
+    .mobile-hero-ui {
+      display: none;
+    }
+
+    .mobile-badge-clone {
+      display: none;
+    }
+
+    /* =====================================================================
+       CONTACT & HIRE ME MODAL OVERLAY
+       ===================================================================== */
+    .contact-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(5, 11, 8, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.24s ease, visibility 0.24s ease;
+    }
+
+    .contact-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .contact-dialog {
+      width: 100%;
+      max-width: 460px;
+      background: #091811;
+      border: 1px solid rgba(207, 238, 224, 0.2);
+      border-radius: 6px;
+      padding: 28px;
+      color: var(--mint);
+      box-shadow: 0 32px 72px rgba(0, 0, 0, 0.65);
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.26s var(--ease-out-expo);
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .contact-backdrop.open .contact-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .contact-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(207, 238, 224, 0.14);
+    }
+
+    .contact-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: rgba(207, 238, 224, 0.65);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .contact-heading {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      line-height: 1.1;
+    }
+
+    .contact-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--mint);
+      background: rgba(255, 255, 255, 0.06);
+      transition: background-color 0.16s ease, color 0.16s ease;
+      flex: none;
+    }
+
+    .contact-close:hover {
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .contact-body {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .contact-identity {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(207, 238, 224, 0.82);
+    }
+
+    .contact-email-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(6, 27, 19, 0.9);
+      border: 1px solid rgba(207, 238, 224, 0.18);
+      border-radius: 4px;
+    }
+
+    .contact-email-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(207, 238, 224, 0.56);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .contact-email-addr {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.01em;
+    }
+
+    .contact-copy-btn {
+      padding: 8px 14px;
+      background: var(--white);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border-radius: 2px;
+      white-space: nowrap;
+      transition: background-color 0.16s ease, transform 0.16s ease;
+    }
+
+    .contact-copy-btn:hover {
+      background: var(--mint);
+    }
+
+    .contact-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(207, 238, 224, 0.62);
+    }
+
+    .contact-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .contact-primary-link {
+      flex: 1;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background-color 0.16s ease;
+    }
+
+    .contact-primary-link:hover {
+      background: var(--mint);
+    }
+
+    .contact-secondary-btn {
+      height: 42px;
+      padding: 0 18px;
+      border: 1px solid rgba(207, 238, 224, 0.25);
+      color: var(--mint);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 2px;
+      transition: background-color 0.16s ease, color 0.16s ease;
+    }
+
+    .contact-secondary-btn:hover {
+      background: rgba(207, 238, 224, 0.12);
+      color: var(--white);
+    }
+
+    /* =====================================================================
+       RESPONSIVE MOBILE LAYOUT (<= 820px)
+       ===================================================================== */
+    @media (max-width: 820px) {
+      /* Hide desktop stage wordmark, tagline, and frame badge */
+      .hero-wordmark-wrap,
+      .hero-tagline,
+      .badge-anchor,
+      .hero-laptop-hotspot::after {
+        display: none !important;
+      }
+
+      /* Mobile Hero UI Layer */
+      .mobile-hero-ui {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 58px);
+        left: 0;
+        right: 0;
+        z-index: 20;
+        pointer-events: none;
+        padding: 0 16px;
+        transition: opacity 0.34s ease, transform 0.34s var(--ease-out-expo);
+      }
+
+      .mobile-hero-ui.hidden-mode {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      .mobile-wordmark-svg {
+        width: min(94vw, 440px);
+        height: auto;
+        display: block;
+      }
+
+      .mobile-tagline {
+        margin-top: -6px;
+        font-family: 'Caveat Brush', cursive;
+        font-size: clamp(28px, 7.6vw, 42px);
+        line-height: 1.05;
+        color: var(--white);
+        transform: rotate(-5deg);
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.32);
+        white-space: nowrap;
+      }
+
+      /* Mobile Compact Badge Clone */
+      .mobile-badge-clone {
+        display: block;
+        position: fixed;
+        right: 12px;
+        top: calc(env(safe-area-inset-top, 0px) + 148px);
+        width: 112px;
+        z-index: 22;
+        background: rgba(250, 251, 250, 0.96);
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 7px;
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.48);
+        transform-origin: top center;
+        transform: rotate(3deg);
+        cursor: pointer;
+        transition: opacity 0.3s ease, transform 0.3s var(--ease-out-expo);
+      }
+
+      .mobile-badge-clone.hidden-mode {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-24px) rotate(3deg);
+      }
+
+      .mobile-badge-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 7px;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid var(--ink);
+        padding-bottom: 3px;
+        margin-bottom: 5px;
+      }
+
+      .mobile-badge-photo {
+        width: 100%;
+        height: 62px;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #0b2f20;
+        margin-bottom: 5px;
+      }
+
+      .mobile-badge-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 18%;
+        display: block;
+      }
+
+      .mobile-badge-name {
+        font-size: 9px;
+        font-weight: 900;
+        line-height: 1.1;
+      }
+
+      .mobile-badge-role {
+        font-size: 7px;
+        font-weight: 700;
+        color: #2f3b35;
+        letter-spacing: 0.04em;
+        margin-top: 2px;
+      }
+
+      /* Mobile Navigation: Compact Top Row within Safe Area */
+      .nav-tag {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 11px;
+      }
+
+      .nav-profile {
+        top: calc(env(safe-area-inset-top, 0px) + 12px);
+        left: 12px;
+      }
+
+      .nav-projects {
+        top: calc(env(safe-area-inset-top, 0px) + 12px);
+        left: 96px;
+        margin-top: 0;
+      }
+
+      .nav-contact {
+        top: calc(env(safe-area-inset-top, 0px) + 12px);
+        right: 82px;
+      }
+
+      .nav-hire {
+        top: calc(env(safe-area-inset-top, 0px) + 12px);
+        bottom: auto;
+        right: 12px;
+      }
+
+      .nav-center-logo {
+        display: none;
+      }
+
+      /* Mobile Hero Framing: Center Character & Keep Silver Laptop Visible */
+      .stage {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        transform: none !important;
+      }
+
+      .hero-plate,
+      .hero-cut-canvas {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-position: 56% 24%;
+      }
+
+      .hero-laptop-hotspot {
+        left: 42%;
+        top: 56%;
+        width: 54%;
+        height: 28%;
+      }
+
+      .hero-bottom-bar {
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+        width: calc(100% - 28px);
+      }
+
+      .identity-caption {
+        font-size: 9.5px;
+        letter-spacing: 0.08em;
+        white-space: normal;
+        line-height: 1.35;
+      }
+
+      /* Mobile Case Mode: Ticket top, Description below, Laptop bottom, Prev/Next along bottom */
+      .case-plate {
+        top: auto;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 74px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(118vw, 520px);
+        height: auto;
+        aspect-ratio: 16 / 9;
+        object-fit: contain;
+      }
+
+      .dive-laptop-3d {
+        top: auto;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 74px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(118vw, 520px);
+        height: auto;
+        aspect-ratio: 16 / 9;
+      }
+
+      .laptop-screen-slot {
+        left: 50%;
+        top: auto;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 74px + min(118vw, 520px) * 0.5625 * 0.292);
+        transform: translateX(-50%);
+        width: calc(min(118vw, 520px) * 0.432);
+        height: calc(min(118vw, 520px) * 0.5625 * 0.492);
+        border-radius: 4px;
+      }
+
+      .ticket-wrap {
+        left: 50%;
+        top: calc(env(safe-area-inset-top, 0px) + 56px);
+        transform: translateX(-50%);
+        width: min(88vw, 340px);
+      }
+
+      .ticket-card {
+        padding: 13px 16px 12px;
+      }
+
+      .ticket-meta-bar {
+        font-size: 10px;
+        margin-bottom: 4px;
+      }
+
+      .ticket-title {
+        font-size: 28px;
+      }
+
+      .ticket-perforation {
+        margin: 10px -4px 8px;
+      }
+
+      .ticket-rows li {
+        padding: 5px 0;
+        font-size: 10.5px;
+      }
+
+      .project-desc-panel {
+        left: 50%;
+        right: auto;
+        top: calc(env(safe-area-inset-top, 0px) + 242px);
+        transform: translateX(-50%);
+        width: min(88vw, 350px);
+        text-align: center;
+      }
+
+      .project-desc-key {
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+
+      .project-desc-copy {
+        font-size: 13px;
+        line-height: 1.42;
+      }
+
+      .project-tech-list {
+        margin-top: 8px;
+        padding-top: 8px;
+        font-size: 11px;
+        line-height: 1.45;
+      }
+
+      .case-controls {
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+        gap: 20px;
+      }
+
+      .round-nav-btn {
+        width: 46px;
+        height: 46px;
+      }
+    }
+
+    /* =====================================================================
+       REDUCED MOTION SUPPORT
+       ===================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.14s !important;
+      }
+
+      .scroll-hint-arrow {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="viewport" id="appViewport" aria-label="Deep Shah Software Engineer Portfolio">
+    <!-- Fixed Viewport-Pinned Navigation -->
+    <header class="site-nav" aria-label="Primary Navigation">
+      <nav aria-label="Portfolio sections">
+        <button type="button" class="nav-tag nav-profile is-current" id="navProfile" aria-label="Return to my profile">my profile</button>
+        <button type="button" class="nav-tag nav-projects" id="navProjects" aria-label="Explore projects">projects</button>
+        <button type="button" class="nav-center-logo" id="navCenterLogo" aria-label="Deep Shah — return to hero">DEEP SHAH</button>
+        <button type="button" class="nav-tag nav-contact" id="navContact" aria-label="Open contact details">contact</button>
+        <button type="button" class="nav-tag nav-hire" id="navHire" aria-label="Hire Deep Shah">hire me</button>
+      </nav>
+    </header>
+
+    <!-- Mobile Fixed UI Wordmark & Tagline (<= 820px) -->
+    <div class="mobile-hero-ui" id="mobileHeroUI" aria-hidden="true">
+      <svg class="mobile-wordmark-svg" viewBox="0 0 1440 260" role="img" aria-label="DEEP SHAH">
+        <defs>
+          <linearGradient id="mobileWordmarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+            <stop offset="68%" stop-color="#cfeee0" stop-opacity="0.72" />
+            <stop offset="100%" stop-color="#14503a" stop-opacity="0.14" />
+          </linearGradient>
+        </defs>
+        <text
+          x="720"
+          y="222"
+          text-anchor="middle"
+          font-family="'Inter Tight', sans-serif"
+          font-weight="900"
+          font-size="268"
+          letter-spacing="-6"
+          fill="url(#mobileWordmarkGrad)"
+        >DEEP SHAH</text>
+      </svg>
+      <p class="mobile-tagline">Code &bull; Build &bull; Deploy</p>
+    </div>
+
+    <!-- Mobile Developer Badge Clone (<= 820px) -->
+    <aside class="mobile-badge-clone" id="mobileBadgeClone" role="button" tabindex="0" aria-label="Developer Card — open contact">
+      <div class="mobile-badge-top">
+        <span>DEVELOPER CARD</span>
+        <span>2026</span>
+      </div>
+      <div class="mobile-badge-photo">
+        <img
+          src="/src/assets/images/deep_shah_badge_photo_1795586065451.jpg"
+          alt="Deep Shah portrait"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+      <div class="mobile-badge-name">DEEP SHAH</div>
+      <div class="mobile-badge-role">SOFTWARE ENGINEER</div>
+    </aside>
+
+    <!-- Main 1440x810 Cinematic Stage -->
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <!-- HERO SCENE -->
+        <section class="hero-layer" id="heroLayer" aria-label="Deep Shah Hero">
+          <img
+            id="heroPlate"
+            class="hero-plate"
+            src="/src/assets/images/deep_shah_hero_plate_1795586063420.jpg"
+            alt="Deep Shah standing in a dark black and emerald developer studio holding an open silver laptop"
+            referrerpolicy="no-referrer"
+            decoding="async"
+          />
+
+          <div class="hero-ambient" aria-hidden="true"></div>
+
+          <!-- Giant Inline SVG Wordmark (Behind Character Cutout) -->
+          <div class="hero-wordmark-wrap" id="heroWordmarkWrap" aria-hidden="true">
+            <svg class="hero-wordmark-svg" viewBox="0 0 1440 260" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="heroWordmarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+                  <stop offset="58%" stop-color="#e3f7ee" stop-opacity="0.82" />
+                  <stop offset="100%" stop-color="#14503a" stop-opacity="0.06" />
+                </linearGradient>
+              </defs>
+              <text
+                x="720"
+                y="224"
+                text-anchor="middle"
+                font-family="'Inter Tight', sans-serif"
+                font-weight="900"
+                font-size="268"
+                letter-spacing="-7"
+                fill="url(#heroWordmarkGrad)"
+              >DEEP SHAH</text>
+            </svg>
+          </div>
+
+          <!-- Pixel-Aligned Transparent Character Cutout (Overlaps DEEP SHAH Wordmark) -->
+          <canvas
+            id="heroCutCanvas"
+            class="hero-cut-canvas"
+            width="1440"
+            height="956"
+            aria-hidden="true"
+          ></canvas>
+
+          <!-- Handwritten Hero Tagline -->
+          <p class="hero-tagline" id="heroTagline">Code &bull; Build &bull; Deploy</p>
+
+          <!-- Clickable Silver Laptop Hotspot -->
+          <button
+            type="button"
+            class="hero-laptop-hotspot"
+            id="heroLaptopHotspot"
+            aria-label="Dive into Deep Shah's software engineering projects"
+          ></button>
+
+          <!-- Hanging Developer ID Badge (582x1030 Frame Units) -->
+          <aside class="badge-anchor" id="badgeAnchor" aria-label="Deep Shah Developer ID Card">
+            <div class="badge-pendulum" id="badgePendulum" role="button" tabindex="0" aria-label="Open Deep Shah developer contact card">
+              <div class="badge-lanyard-strap" aria-hidden="true">
+                <span>DEEP SHAH &bull; DEV</span>
+              </div>
+              <div class="badge-clasp" aria-hidden="true">
+                <div class="badge-clasp-crimp"></div>
+                <div class="badge-clasp-ring"></div>
+                <div class="badge-clasp-clip"></div>
+              </div>
+              <div class="badge-sleeve">
+                <div class="badge-card">
+                  <div class="badge-card-top">
+                    <span class="badge-card-title">DEVELOPER CARD</span>
+                    <span class="badge-card-year">2026</span>
+                  </div>
+                  <div class="badge-card-sub">SOFTWARE ENGINEER</div>
+
+                  <div class="badge-photo-frame">
+                    <img
+                      id="badgePhoto"
+                      src="/src/assets/images/deep_shah_badge_photo_1795586065451.jpg"
+                      alt="Deep Shah developer ID headshot"
+                      referrerpolicy="no-referrer"
+                    />
+                  </div>
+
+                  <div class="badge-rows">
+                    <div class="badge-row">
+                      <span class="badge-row-label">NAME</span>
+                      <span class="badge-row-dots" aria-hidden="true"></span>
+                      <span class="badge-row-val">DEEP SHAH</span>
+                    </div>
+                    <div class="badge-row">
+                      <span class="badge-row-label">ROLE</span>
+                      <span class="badge-row-dots" aria-hidden="true"></span>
+                      <span class="badge-row-val">SOFTWARE ENGINEER</span>
+                    </div>
+                    <div class="badge-row">
+                      <span class="badge-row-label">FOCUS</span>
+                      <span class="badge-row-dots" aria-hidden="true"></span>
+                      <span class="badge-row-val">JAVA / SPRING BOOT</span>
+                    </div>
+                    <div class="badge-row">
+                      <span class="badge-row-label">STACK</span>
+                      <span class="badge-row-dots" aria-hidden="true"></span>
+                      <span class="badge-row-val">MICROSERVICES</span>
+                    </div>
+                    <div class="badge-row">
+                      <span class="badge-row-label">EMAIL</span>
+                      <span class="badge-row-dots" aria-hidden="true"></span>
+                      <span class="badge-row-val">HI@DEEPSHAH.DEV</span>
+                    </div>
+                  </div>
+
+                  <div class="badge-card-footer">
+                    <span>@DEEPSHAH</span>
+                    <div class="badge-barcode" aria-hidden="true">
+                      <i class="w"></i><i></i><i class="m"></i><i></i><i class="w"></i>
+                      <i></i><i></i><i class="m"></i><i class="w"></i><i></i>
+                      <i class="m"></i><i></i><i class="w"></i><i></i><i class="m"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <!-- LAPTOP DIVE TRANSITION LAYER -->
+        <div class="trans-layer" id="transLayer" aria-hidden="true">
+          <div class="dive-studio-wash" id="diveStudioWash"></div>
+          <video
+            id="transVideo"
+            class="trans-video"
+            muted
+            playsinline
+            preload="auto"
+          ></video>
+          <div class="dive-laptop-3d" id="diveLaptop3d">
+            <img
+              id="diveLaptopImg"
+              src="/src/assets/images/silver_laptop_case_plate_1795586063419.jpg"
+              alt=""
+              referrerpolicy="no-referrer"
+            />
+          </div>
+        </div>
+
+        <!-- CASE STUDY LAPTOP SCENE -->
+        <section class="case-layer" id="caseLayer" aria-label="Software Project Case Studies" aria-hidden="true">
+          <img
+            id="casePlate"
+            class="case-plate"
+            src="/src/assets/images/silver_laptop_case_plate_1795586063419.jpg"
+            alt="Silver aluminum laptop centered in a dark emerald studio displaying software engineering case studies"
+            referrerpolicy="no-referrer"
+            decoding="async"
+          />
+
+          <!-- Interactive Laptop Display Slot -->
+          <div
+            class="laptop-screen-slot"
+            id="laptopScreenSlot"
+            role="button"
+            tabindex="0"
+            aria-label="Advance to next software project"
+          >
+            <div class="screen-slide is-active" data-project-index="0" id="screenSlide0">
+              <canvas class="screen-canvas" id="projectCanvas0" width="960" height="600"></canvas>
+            </div>
+            <div class="screen-slide" data-project-index="1" id="screenSlide1">
+              <canvas class="screen-canvas" id="projectCanvas1" width="960" height="600"></canvas>
+            </div>
+            <div class="screen-slide" data-project-index="2" id="screenSlide2">
+              <canvas class="screen-canvas" id="projectCanvas2" width="960" height="600"></canvas>
+            </div>
+            <div class="screen-flash" id="screenFlash" aria-hidden="true"></div>
+            <span class="screen-click-hint" aria-hidden="true">click for next project &rarr;</span>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Hero Scroll Hint & Professional Identity -->
+    <div class="hero-bottom-bar" id="heroBottomBar">
+      <button type="button" class="scroll-hint-btn" id="scrollHintBtn" aria-label="Explore my work — scroll or click">
+        <span>explore my work</span>
+        <span class="scroll-hint-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" /></svg>
+        </span>
+      </button>
+      <p class="identity-caption">SOFTWARE ENGINEER | JAVA | SPRING BOOT | MICROSERVICES | AWS</p>
+    </div>
+
+    <!-- Case Mode Viewport-Anchored Ticket, Description & Round Navigation -->
+    <div class="case-ui" id="caseUI" aria-hidden="true">
+      <article class="ticket-wrap" id="ticketWrap" aria-live="polite">
+        <div class="ticket-card" id="ticketCard">
+          <div class="ticket-meta-bar">
+            <span>CASE STUDY</span>
+            <span id="ticketIndex">01 / 03</span>
+          </div>
+          <h1 class="ticket-title" id="ticketTitle">FIXIE</h1>
+          <div class="ticket-perforation" aria-hidden="true"></div>
+          <ul class="ticket-rows" id="ticketRows">
+            <li data-idx="01">FIXIE PLATFORM</li>
+            <li data-idx="02">ON-DEMAND SERVICES</li>
+            <li data-idx="03">JAVA / SPRING BOOT</li>
+          </ul>
+        </div>
+      </article>
+
+      <aside class="project-desc-panel" id="projectDescPanel" aria-live="polite">
+        <div class="project-desc-key" id="projectDescKey">// fixie platform</div>
+        <p class="project-desc-copy" id="projectDescCopy">
+          &mdash; an on-demand home services platform connecting customers with service providers through bookings, tracking, payments and service management.
+        </p>
+        <div class="project-tech-list" id="projectTechList"></div>
+      </aside>
+
+      <div class="case-controls" role="group" aria-label="Project navigation">
+        <button type="button" class="round-nav-btn" id="btnPrev" aria-label="Previous project or return to hero">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <span class="case-counter" id="caseCounter" aria-live="polite">01 / 03</span>
+        <button type="button" class="round-nav-btn" id="btnNext" aria-label="Next project">
+          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contact / Hire Me Dialog -->
+    <div class="contact-backdrop" id="contactBackdrop" role="dialog" aria-modal="true" aria-labelledby="contactHeading" aria-hidden="true">
+      <div class="contact-dialog">
+        <div class="contact-header">
+          <div>
+            <div class="contact-kicker" id="contactKicker">DEEP SHAH &middot; SOFTWARE ENGINEER</div>
+            <h2 class="contact-heading" id="contactHeading">Get in touch</h2>
+          </div>
+          <button type="button" class="contact-close" id="contactClose" aria-label="Close contact dialog">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="contact-body">
+          <p class="contact-identity" id="contactCopy">
+            Software Engineer specializing in Java, Spring Boot, Microservices, and AWS cloud backend systems.
+          </p>
+
+          <div class="contact-email-box">
+            <div>
+              <span class="contact-email-label">Professional Email</span>
+              <span class="contact-email-addr" id="contactEmailAddr">HI@DEEPSHAH.DEV</span>
+            </div>
+            <button type="button" class="contact-copy-btn" id="copyEmailBtn">Copy email</button>
+          </div>
+
+          <p class="contact-note">
+            Placeholder contact address configured for portfolio preview. Replace with your confirmed email in <code>PORTFOLIO_ASSETS.contactEmail</code>.
+          </p>
+
+          <div class="contact-actions">
+            <a class="contact-primary-link" id="mailtoLink" href="mailto:HI@DEEPSHAH.DEV?subject=Software%20Engineering%20Inquiry">Open mail client</a>
+            <button type="button" class="contact-secondary-btn" id="contactViewWork">View projects</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      /* =====================================================================
+         1. ASSET & PROJECT CONFIGURATION
+            Swap any URL here to plug in custom photography, transparent PNG
+            cutout, filmed laptop dive video (trans), or project demo videos.
+         ===================================================================== */
+      const PORTFOLIO_ASSETS = {
+        plate: '/src/assets/images/deep_shah_hero_plate_1795586063420.jpg',
+        casePlate: '/src/assets/images/silver_laptop_case_plate_1795586063419.jpg',
+        badgePhoto: '/src/assets/images/deep_shah_badge_photo_1795586065451.jpg',
+        // Optional transparent PNG cutout aligned 1:1 with plate. When null,
+        // an automatic edge-aware chroma matte is generated from `plate`.
+        cut: null,
+        // Optional ~5s filmed 16:9 laptop dive transition MP4 URL.
+        // Played in ~1.7s via eased rAF playbackRate curve (blob preload + direct fallback).
+        // When null, the built-in 1.7s 3D cinematic camera dive runs seamlessly.
+        trans: null,
+        contactEmail: 'HI@DEEPSHAH.DEV',
+      };
+
+      const PROJECTS = [
+        {
+          id: 'fixie',
+          number: '01',
+          title: 'FIXIE',
+          rows: ['FIXIE PLATFORM', 'ON-DEMAND SERVICES', 'JAVA / SPRING BOOT'],
+          key: '// fixie platform',
+          description:
+            '— an on-demand home services platform connecting customers with service providers through bookings, tracking, payments and service management.',
+          tech: ['Java', 'Spring Boot', 'PostgreSQL', 'Redis', 'Spring Security', 'RabbitMQ', 'AWS', 'Docker'],
+          // Optional real project demo video or screenshot URL:
+          video: null,
+          screenshot: null,
+        },
+        {
+          id: 'digibiometric',
+          number: '02',
+          title: 'DIGIBIOMETRIC',
+          rows: ['BIOMETRIC VERIFICATION', 'EXAMINATION SYSTEM', 'JAVA / AWS'],
+          key: '// digibiometric',
+          description:
+            '— a biometric examination verification system with secure APIs and bulk data synchronization using AWS S3 presigned URLs.',
+          tech: ['Java', 'Spring Boot', 'REST APIs', 'AWS S3', 'Presigned URLs', 'Bulk synchronization'],
+          video: null,
+          screenshot: null,
+        },
+        {
+          id: 'personal',
+          number: '03',
+          title: 'PERSONAL PROJECTS',
+          rows: ['BACKEND DEVELOPMENT', 'FULL STACK EXPLORATION', 'JAVA / CLOUD'],
+          key: '// personal projects',
+          description:
+            '— a collection of personal development projects exploring backend engineering, scalable APIs, cloud infrastructure and modern application development.',
+          tech: ['Java', 'Spring Boot', 'Scalable APIs', 'Cloud Infrastructure', 'Full-Stack'],
+          video: null,
+          screenshot: null,
+        },
+      ];
+
+      /* =====================================================================
+         2. DOM REFERENCES & APPLICATION STATE
+         ===================================================================== */
+      const els = {
+        stage: document.getElementById('stage'),
+        heroLayer: document.getElementById('heroLayer'),
+        heroPlate: document.getElementById('heroPlate'),
+        heroWordmarkWrap: document.getElementById('heroWordmarkWrap'),
+        heroCutCanvas: document.getElementById('heroCutCanvas'),
+        heroTagline: document.getElementById('heroTagline'),
+        heroLaptopHotspot: document.getElementById('heroLaptopHotspot'),
+        badgeAnchor: document.getElementById('badgeAnchor'),
+        badgePendulum: document.getElementById('badgePendulum'),
+        mobileHeroUI: document.getElementById('mobileHeroUI'),
+        mobileBadgeClone: document.getElementById('mobileBadgeClone'),
+        heroBottomBar: document.getElementById('heroBottomBar'),
+        scrollHintBtn: document.getElementById('scrollHintBtn'),
+
+        transLayer: document.getElementById('transLayer'),
+        diveStudioWash: document.getElementById('diveStudioWash'),
+        transVideo: document.getElementById('transVideo'),
+        diveLaptop3d: document.getElementById('diveLaptop3d'),
+
+        caseLayer: document.getElementById('caseLayer'),
+        casePlate: document.getElementById('casePlate'),
+        laptopScreenSlot: document.getElementById('laptopScreenSlot'),
+        screenFlash: document.getElementById('screenFlash'),
+        caseUI: document.getElementById('caseUI'),
+        ticketWrap: document.getElementById('ticketWrap'),
+        ticketCard: document.getElementById('ticketCard'),
+        ticketIndex: document.getElementById('ticketIndex'),
+        ticketTitle: document.getElementById('ticketTitle'),
+        ticketRows: document.getElementById('ticketRows'),
+        projectDescPanel: document.getElementById('projectDescPanel'),
+        projectDescKey: document.getElementById('projectDescKey'),
+        projectDescCopy: document.getElementById('projectDescCopy'),
+        projectTechList: document.getElementById('projectTechList'),
+        caseCounter: document.getElementById('caseCounter'),
+        btnPrev: document.getElementById('btnPrev'),
+        btnNext: document.getElementById('btnNext'),
+
+        navProfile: document.getElementById('navProfile'),
+        navProjects: document.getElementById('navProjects'),
+        navCenterLogo: document.getElementById('navCenterLogo'),
+        navContact: document.getElementById('navContact'),
+        navHire: document.getElementById('navHire'),
+
+        contactBackdrop: document.getElementById('contactBackdrop'),
+        contactKicker: document.getElementById('contactKicker'),
+        contactHeading: document.getElementById('contactHeading'),
+        contactCopy: document.getElementById('contactCopy'),
+        contactEmailAddr: document.getElementById('contactEmailAddr'),
+        copyEmailBtn: document.getElementById('copyEmailBtn'),
+        mailtoLink: document.getElementById('mailtoLink'),
+        contactClose: document.getElementById('contactClose'),
+        contactViewWork: document.getElementById('contactViewWork'),
+      };
+
+      const state = {
+        mode: 'hero', // 'hero' | 'case'
+        projectIndex: 0,
+        busy: false,
+        lockUntil: 0,
+        contactOpen: false,
+        entered: false,
+        transBlobUrl: null,
+        transVideoReady: false,
+        badgeIdleAnim: null,
+        activeDiveRaf: null,
+        canvasRaf: null,
+        projectVideos: [],
+        prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      };
+
+      const INTERACTION_LOCK_MS = 900;
+      const DIVE_DURATION_MS = 1700;
+      const isMobile = () => window.innerWidth <= 820;
+
+      window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+        state.prefersReducedMotion = e.matches;
+        if (e.matches && state.badgeIdleAnim) {
+          state.badgeIdleAnim.cancel();
+          state.badgeIdleAnim = null;
+        }
+      });
+
+      /* =====================================================================
+         3. VIEWPORT COVER-SCALE ENGINE (1440x810 Desktop Stage)
+         ===================================================================== */
+      function updateStageScale() {
+        if (isMobile()) {
+          document.documentElement.style.setProperty('--stage-scale', '1');
+          return;
+        }
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        // Cover-scale so photographic studio fills 100% of any desktop aspect ratio
+        const scale = Math.max(vw / 1440, vh / 810);
+        document.documentElement.style.setProperty('--stage-scale', scale.toFixed(5));
+      }
+
+      window.addEventListener('resize', updateStageScale);
+      updateStageScale();
+
+      /* =====================================================================
+         4. PIXEL-ALIGNED CHARACTER CUTOUT GENERATOR (Overlaps DEEP SHAH)
+            Extracts the smooth dark-emerald upper studio wall from `plate`
+            so Deep Shah's head, hair, ears, neck and navy shirt cleanly sit
+            in front of the giant white DEEP SHAH wordmark.
+         ===================================================================== */
+      function buildHeroCutout(img) {
+        const canvas = els.heroCutCanvas;
+        if (!canvas || !img || !img.naturalWidth) return;
+
+        // If user supplied an explicit transparent PNG cutout URL, draw it directly
+        if (PORTFOLIO_ASSETS.cut) {
+          const cutImg = new Image();
+          cutImg.crossOrigin = 'anonymous';
+          cutImg.onload = () => {
+            const ctx = canvas.getContext('2d');
+            drawImageCover(ctx, cutImg, canvas.width, canvas.height);
+            canvas.classList.add('ready');
+          };
+          cutImg.src = PORTFOLIO_ASSETS.cut;
+          return;
+        }
+
+        try {
+          const w = canvas.width;
+          const h = canvas.height;
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          ctx.clearRect(0, 0, w, h);
+          drawImageCover(ctx, img, w, h);
+
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const data = imgData.data;
+
+          // Only need transparency in the upper wordmark region (y: 0..560)
+          // because the DEEP SHAH wordmark sits in top ~460px of the plate.
+          const maskLimitY = Math.min(h, 580);
+          const visited = new Uint8Array(w * maskLimitY);
+          const bgMask = new Uint8Array(w * maskLimitY);
+
+          // Sample average studio backdrop color from top corners
+          function isStudioGreenBackdrop(x, y) {
+            const idx = (y * w + x) * 4;
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+            const lum = (r * 77 + g * 150 + b * 29) >> 8;
+
+            // Protect warm skin tones (R clearly dominates G and B)
+            if (r > g + 4 && r > 32) return false;
+            // Protect blue navy shirt tones (B dominates G)
+            if (b > g + 1 && b > 18) return false;
+
+            // Protect center hair crown core (very neutral dark black around center top)
+            const nx = x / w;
+            const ny = y / h;
+            const inHairZone = nx > 0.435 && nx < 0.565 && ny > 0.062 && ny < 0.36;
+            if (inHairZone && g - r <= 3 && g - b <= 3 && lum < 45) return false;
+
+            // Smooth dark-emerald studio wall: green channel dominates both red & blue
+            if (g >= r + 3 && g >= b + 2 && lum < 96) return true;
+            // Very dark studio shadows in outer columns far from subject center
+            if ((nx < 0.36 || nx > 0.64) && g >= r + 1 && lum < 52) return true;
+            // Top headroom strip above hair crown
+            if (ny < 0.062 && lum < 64 && g >= r) return true;
+
+            return false;
+          }
+
+          // Iterative BFS queue (typed array for instant <15ms execution)
+          const queue = new Int32Array(w * maskLimitY);
+          let head = 0;
+          let tail = 0;
+
+          function seed(x, y) {
+            const p = y * w + x;
+            if (visited[p]) return;
+            if (isStudioGreenBackdrop(x, y)) {
+              visited[p] = 1;
+              bgMask[p] = 1;
+              queue[tail++] = p;
+            }
+          }
+
+          // Seed along top border and upper left/right wall borders
+          for (let x = 0; x < w; x += 2) seed(x, 0);
+          for (let y = 0; y < maskLimitY; y += 2) {
+            seed(0, y);
+            seed(w - 1, y);
+          }
+
+          while (head < tail) {
+            const p = queue[head++];
+            const x = p % w;
+            const y = (p / w) | 0;
+
+            if (x > 0) {
+              const np = p - 1;
+              if (!visited[np] && isStudioGreenBackdrop(x - 1, y)) {
+                visited[np] = 1;
+                bgMask[np] = 1;
+                queue[tail++] = np;
+              }
+            }
+            if (x + 1 < w) {
+              const np = p + 1;
+              if (!visited[np] && isStudioGreenBackdrop(x + 1, y)) {
+                visited[np] = 1;
+                bgMask[np] = 1;
+                queue[tail++] = np;
+              }
+            }
+            if (y > 0) {
+              const np = p - w;
+              if (!visited[np] && isStudioGreenBackdrop(x, y - 1)) {
+                visited[np] = 1;
+                bgMask[np] = 1;
+                queue[tail++] = np;
+              }
+            }
+            if (y + 1 < maskLimitY) {
+              const np = p + w;
+              if (!visited[np] && isStudioGreenBackdrop(x, y + 1)) {
+                visited[np] = 1;
+                bgMask[np] = 1;
+                queue[tail++] = np;
+              }
+            }
+          }
+
+          // Apply alpha with 2px soft edge feathering for crisp photographic hair/ear edges
+          const alphaMap = new Float32Array(w * maskLimitY);
+          for (let i = 0; i < w * maskLimitY; i++) {
+            alphaMap[i] = bgMask[i] ? 0 : 1;
+          }
+
+          for (let y = 1; y < maskLimitY - 1; y++) {
+            const row = y * w;
+            for (let x = 1; x < w - 1; x++) {
+              const p = row + x;
+              // Smooth only along silhouette boundary pixels
+              const sum =
+                alphaMap[p - w - 1] + alphaMap[p - w] + alphaMap[p - w + 1] +
+                alphaMap[p - 1] + alphaMap[p] * 2 + alphaMap[p + 1] +
+                alphaMap[p + w - 1] + alphaMap[p + w] + alphaMap[p + w + 1];
+              const avg = sum / 10;
+              data[p * 4 + 3] = Math.round(avg * 255);
+            }
+          }
+
+          // Keep top/side border rows transparent where masked
+          for (let x = 0; x < w; x++) {
+            if (bgMask[x]) data[x * 4 + 3] = 0;
+          }
+
+          // Below maskLimitY, fade cutout smoothly to transparent so plate shows cleanly
+          for (let y = maskLimitY; y < h; y++) {
+            const row = y * w;
+            for (let x = 0; x < w; x++) {
+              data[(row + x) * 4 + 3] = 0;
+            }
+          }
+
+          ctx.putImageData(imgData, 0, 0);
+          canvas.classList.add('ready');
+        } catch (_err) {
+          // Graceful fallback if canvas pixel read is restricted
+          els.heroCutCanvas.style.opacity = '0';
+        }
+      }
+
+      function drawImageCover(ctx, img, targetW, targetH) {
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const targetRatio = targetW / targetH;
+        let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+
+        if (imgRatio > targetRatio) {
+          sw = img.naturalHeight * targetRatio;
+          sx = (img.naturalWidth - sw) / 2;
+        } else {
+          sh = img.naturalWidth / targetRatio;
+          sy = (img.naturalHeight - sh) / 2;
+        }
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+      }
+
+      /* =====================================================================
+         5. AUTO-CALIBRATE LAPTOP SCREEN BEZEL FROM `casePlate`
+            Scans the rendered 1440x956.25 casePlate at top -105.47px to lock
+            the interactive screen rectangle to the exact silver lid rim.
+         ===================================================================== */
+      function calibrateLaptopScreenSlot(img) {
+        if (!img || !img.naturalWidth) return;
+        try {
+          const sampleW = 360;
+          const sampleH = 239; // 1440x956.25 / 4
+          const off = document.createElement('canvas');
+          off.width = sampleW;
+          off.height = sampleH;
+          const ctx = off.getContext('2d', { willReadFrequently: true });
+          drawImageCover(ctx, img, sampleW, sampleH);
+          const data = ctx.getImageData(0, 0, sampleW, sampleH).data;
+
+          const lumAt = (x, y) => {
+            const i = (y * sampleW + x) * 4;
+            return (data[i] + data[i + 1] + data[i + 2]) / 3;
+          };
+
+          const midX = Math.round(sampleW * 0.5);
+          const midY = Math.round(sampleH * 0.46);
+
+          // Find silver bezel rim on top, left, right, and keyboard hinge bottom
+          let topRim = Math.round(sampleH * 0.195);
+          for (let y = Math.round(sampleH * 0.10); y < Math.round(sampleH * 0.34); y++) {
+            if (lumAt(midX, y) > 78) { topRim = y; break; }
+          }
+          let screenTop = topRim + 6;
+          for (let y = topRim + 2; y < Math.round(sampleH * 0.34); y++) {
+            if (lumAt(midX, y) < 16) { screenTop = y + 1; break; }
+          }
+
+          let leftRim = Math.round(sampleW * 0.245);
+          for (let x = Math.round(sampleW * 0.12); x < Math.round(sampleW * 0.38); x++) {
+            if (lumAt(x, midY) > 75) { leftRim = x; break; }
+          }
+          let screenLeft = leftRim + 4;
+          for (let x = leftRim + 1; x < Math.round(sampleW * 0.38); x++) {
+            if (lumAt(x, midY) < 16) { screenLeft = x + 1; break; }
+          }
+
+          let rightRim = Math.round(sampleW * 0.755);
+          for (let x = Math.round(sampleW * 0.88); x > Math.round(sampleW * 0.62); x--) {
+            if (lumAt(x, midY) > 75) { rightRim = x; break; }
+          }
+          let screenRight = rightRim - 4;
+          for (let x = rightRim - 1; x > Math.round(sampleW * 0.62); x--) {
+            if (lumAt(x, midY) < 16) { screenRight = x - 1; break; }
+          }
+
+          let screenBottom = Math.round(sampleH * 0.705);
+          for (let y = Math.round(sampleH * 0.60); y < Math.round(sampleH * 0.78); y++) {
+            if (lumAt(midX, y) > 26) { screenBottom = y - 2; break; }
+          }
+
+          // Convert sample coords back into 1440x810 stage space (plate top = -105.47px)
+          const sx = 1440 / sampleW;
+          const sy = 956.25 / sampleH;
+          const finalLeft = Math.round(screenLeft * sx) + 3;
+          const finalTop = Math.round(screenTop * sy - 105.47) + 3;
+          const finalW = Math.round((screenRight - screenLeft) * sx) - 6;
+          const finalH = Math.round((screenBottom - screenTop) * sy) - 6;
+
+          if (finalW > 480 && finalW < 920 && finalH > 280 && finalH < 580) {
+            const root = document.documentElement.style;
+            root.setProperty('--screen-left', `${finalLeft}px`);
+            root.setProperty('--screen-top', `${finalTop}px`);
+            root.setProperty('--screen-w', `${finalW}px`);
+            root.setProperty('--screen-h', `${finalH}px`);
+          }
+        } catch (_err) {
+          // Default CSS custom properties already calibrated accurately
+        }
+      }
+
+      /* =====================================================================
+         6. TRANSITION VIDEO PRELOADER (fetch -> blob -> createObjectURL + fallback)
+         ===================================================================== */
+      async function preloadTransitionVideo() {
+        if (!PORTFOLIO_ASSETS.trans) return;
+        const vid = els.transVideo;
+        try {
+          const res = await fetch(PORTFOLIO_ASSETS.trans);
+          if (!res.ok) throw new Error('Transition clip fetch failed');
+          const blob = await res.blob();
+          state.transBlobUrl = URL.createObjectURL(blob);
+          vid.src = state.transBlobUrl;
+        } catch (_err) {
+          // Direct-video fallback
+          vid.src = PORTFOLIO_ASSETS.trans;
+        }
+        vid.addEventListener(
+          'canplaythrough',
+          () => {
+            state.transVideoReady = true;
+          },
+          { once: true }
+        );
+        vid.load();
+      }
+
+      /* =====================================================================
+         7. PROJECT MEDIA & LIVE ARCHITECTURAL CANVAS RENDERERS
+            Supports real project <video muted loop playsinline> or screenshot
+            if configured, and renders truthful interactive engineering
+            architecture visuals for each documented project stack.
+         ===================================================================== */
+      function setupProjectScreens() {
+        PROJECTS.forEach((proj, idx) => {
+          const slide = document.getElementById(`screenSlide${idx}`);
+          if (!slide) return;
+
+          if (proj.video) {
+            slide.innerHTML = '';
+            const v = document.createElement('video');
+            v.className = 'screen-video';
+            v.src = proj.video;
+            v.muted = true;
+            v.loop = true;
+            v.playsInline = true;
+            v.setAttribute('playsinline', '');
+            v.setAttribute('muted', '');
+            v.preload = 'metadata';
+            slide.appendChild(v);
+            state.projectVideos[idx] = v;
+          } else if (proj.screenshot) {
+            slide.innerHTML = '';
+            const im = document.createElement('img');
+            im.className = 'screen-img';
+            im.src = proj.screenshot;
+            im.alt = `${proj.title} software preview`;
+            im.referrerPolicy = 'no-referrer';
+            slide.appendChild(im);
+          }
+        });
+      }
+
+      function syncProjectVideos() {
+        state.projectVideos.forEach((vid, idx) => {
+          if (!vid) return;
+          if (state.mode === 'case' && idx === state.projectIndex) {
+            vid.play().catch(() => {});
+          } else {
+            vid.pause();
+            if (vid.currentTime > 0) {
+              try { vid.currentTime = 0; } catch (_e) {}
+            }
+          }
+        });
+      }
+
+      /* Clean, truthful 60fps interactive engineering blueprint visualizer inside the laptop screen */
+      function startProjectScreenLoop() {
+        if (state.canvasRaf) cancelAnimationFrame(state.canvasRaf);
+
+        const canvases = [
+          document.getElementById('projectCanvas0'),
+          document.getElementById('projectCanvas1'),
+          document.getElementById('projectCanvas2'),
+        ];
+
+        const drawRoundedRect = (ctx, x, y, w, h, r) => {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.arcTo(x + w, y, x + w, y + h, r);
+          ctx.arcTo(x + w, y + h, x, y + h, r);
+          ctx.arcTo(x, y + h, x, y, r);
+          ctx.arcTo(x, y, x + w, y, r);
+          ctx.closePath();
+        };
+
+        const renderFrame = (ts) => {
+          const t = state.prefersReducedMotion ? 0 : ts * 0.001;
+          if (state.mode === 'case') {
+            const idx = state.projectIndex;
+            const canvas = canvases[idx];
+            if (canvas) {
+              const ctx = canvas.getContext('2d');
+              const W = canvas.width;
+              const H = canvas.height;
+
+              // Deep studio IDE canvas background
+              const bg = ctx.createLinearGradient(0, 0, W, H);
+              bg.addColorStop(0, '#07110d');
+              bg.addColorStop(0.55, '#0a1c14');
+              bg.addColorStop(1, '#06120d');
+              ctx.fillStyle = bg;
+              ctx.fillRect(0, 0, W, H);
+
+              // Subtle architectural dot grid
+              ctx.fillStyle = 'rgba(207, 238, 224, 0.065)';
+              for (let gx = 28; gx < W; gx += 32) {
+                for (let gy = 68; gy < H - 24; gy += 32) {
+                  ctx.fillRect(gx, gy, 1.5, 1.5);
+                }
+              }
+
+              // Minimal macOS-style dark window bar
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+              ctx.fillRect(0, 0, W, 44);
+              ctx.fillStyle = 'rgba(207, 238, 224, 0.12)';
+              ctx.fillRect(0, 44, W, 1);
+
+              // Subtle monochrome window controls
+              [22, 40, 58].forEach((cx) => {
+                ctx.beginPath();
+                ctx.arc(cx, 22, 4.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(207, 238, 224, 0.24)';
+                ctx.fill();
+              });
+
+              const headers = [
+                'fixie-platform / BookingServiceArchitecture.java',
+                'digibiometric / S3BulkSyncController.java',
+                'deep-shah / backend-cloud-workspace',
+              ];
+              ctx.font = '600 14px "Inter Tight", sans-serif';
+              ctx.fillStyle = 'rgba(207, 238, 224, 0.72)';
+              ctx.textAlign = 'left';
+              ctx.fillText(headers[idx], 86, 27);
+
+              ctx.textAlign = 'right';
+              ctx.fillStyle = 'rgba(207, 238, 224, 0.45)';
+              ctx.fillText(`0${idx + 1} / 03`, W - 24, 27);
+              ctx.textAlign = 'left';
+
+              if (idx === 0) {
+                drawFixieArchitecture(ctx, W, H, t, drawRoundedRect);
+              } else if (idx === 1) {
+                drawDigibiometricArchitecture(ctx, W, H, t, drawRoundedRect);
+              } else {
+                drawPersonalProjectsWorkspace(ctx, W, H, t, drawRoundedRect);
+              }
+            }
+          }
+          state.canvasRaf = requestAnimationFrame(renderFrame);
+        };
+
+        state.canvasRaf = requestAnimationFrame(renderFrame);
+      }
+
+      function drawNode(ctx, x, y, w, h, title, subtitle, highlight, drawRoundedRect) {
+        drawRoundedRect(ctx, x, y, w, h, 8);
+        ctx.fillStyle = highlight ? 'rgba(26, 90, 64, 0.34)' : 'rgba(11, 31, 22, 0.88)';
+        ctx.fill();
+        ctx.lineWidth = highlight ? 1.6 : 1;
+        ctx.strokeStyle = highlight ? 'rgba(207, 238, 224, 0.65)' : 'rgba(207, 238, 224, 0.22)';
+        ctx.stroke();
+
+        ctx.font = '700 15px "Inter Tight", sans-serif';
+        ctx.fillStyle = '#f3fbf7';
+        ctx.fillText(title, x + 16, y + 30);
+
+        ctx.font = '500 12.5px "Inter Tight", sans-serif';
+        ctx.fillStyle = 'rgba(207, 238, 224, 0.68)';
+        ctx.fillText(subtitle, x + 16, y + 51);
+      }
+
+      function drawFlowEdge(ctx, x1, y1, x2, y2, phase) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = 'rgba(207, 238, 224, 0.24)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        const p = ((phase % 1) + 1) % 1;
+        const px = x1 + (x2 - x1) * p;
+        const py = y1 + (y2 - y1) * p;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.6, 0, Math.PI * 2);
+        ctx.fillStyle = '#cfeee0';
+        ctx.fill();
+      }
+
+      function drawFixieArchitecture(ctx, W, H, t, drawRoundedRect) {
+        ctx.font = '800 22px "Inter Tight", sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('FIXIE — On-Demand Home Services Architecture', 44, 96);
+
+        ctx.font = '500 14px "Inter Tight", sans-serif';
+        ctx.fillStyle = 'rgba(207, 238, 224, 0.68)';
+        ctx.fillText('Event-driven Java & Spring Boot backend for bookings, live tracking, payments & provider dispatch', 44, 122);
+
+        // Flow edges
+        drawFlowEdge(ctx, 238, 210, 312, 210, t * 0.45);
+        drawFlowEdge(ctx, 512, 210, 586, 210, t * 0.45 + 0.25);
+        drawFlowEdge(ctx, 686, 248, 686, 304, t * 0.45 + 0.5);
+        drawFlowEdge(ctx, 412, 248, 412, 304, t * 0.45 + 0.35);
+        drawFlowEdge(ctx, 412, 248, 140, 304, t * 0.45 + 0.65);
+
+        // Top row
+        drawNode(ctx, 44, 172, 194, 76, 'API Gateway', 'Spring Security · JWT', false, drawRoundedRect);
+        drawNode(ctx, 312, 172, 200, 76, 'Booking Service', 'Java · Spring Boot', true, drawRoundedRect);
+        drawNode(ctx, 586, 172, 200, 76, 'Message Broker', 'RabbitMQ Async Events', false, drawRoundedRect);
+
+        // Middle row
+        drawNode(ctx, 44, 304, 194, 76, 'PostgreSQL', 'Bookings & Ledger Data', false, drawRoundedRect);
+        drawNode(ctx, 312, 304, 200, 76, 'Redis Cache', 'Session & Tracking State', false, drawRoundedRect);
+        drawNode(ctx, 586, 304, 200, 76, 'Provider & Payments', 'Dispatch & Settlement', false, drawRoundedRect);
+
+        // Bottom clean code signature panel
+        drawRoundedRect(ctx, 44, 418, W - 88, 138, 8);
+        ctx.fillStyle = 'rgba(4, 12, 9, 0.92)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(207, 238, 224, 0.16)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        const codeLines = [
+          '@Service  // Spring Boot · Docker · AWS Deployment',
+          'public class BookingOrchestrator {',
+          '    public BookingResponse createBooking(BookingRequest req) {',
+          '        Booking saved = bookingRepo.save(Booking.from(req));',
+          '        rabbitTemplate.convertAndSend("fixie.events", "booking.created", saved.getId());',
+          '        return BookingResponse.of(saved);',
+          '    }',
+          '}',
+        ];
+        ctx.font = '500 13px ui-monospace, SFMono-Regular, Menlo, monospace';
+        codeLines.forEach((line, i) => {
+          ctx.fillStyle = i === 0 ? 'rgba(207, 238, 224, 0.5)' : 'rgba(232, 247, 240, 0.88)';
+          ctx.fillText(line, 64, 446 + i * 16);
+        });
+      }
+
+      function drawDigibiometricArchitecture(ctx, W, H, t, drawRoundedRect) {
+        ctx.font = '800 22px "Inter Tight", sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('DIGIBIOMETRIC — Secure Verification & S3 Bulk Sync', 44, 96);
+
+        ctx.font = '500 14px "Inter Tight", sans-serif';
+        ctx.fillStyle = 'rgba(207, 238, 224, 0.68)';
+        ctx.fillText('Biometric examination verification APIs with direct AWS S3 presigned URL bulk synchronization', 44, 122);
+
+        // Pipeline connections
+        drawFlowEdge(ctx, 250, 210, 344, 210, t * 0.4);
+        drawFlowEdge(ctx, 574, 210, 668, 210, t * 0.4 + 0.3);
+        drawFlowEdge(ctx, 459, 248, 459, 304, t * 0.4 + 0.55);
+        drawFlowEdge(ctx, 782, 248, 782, 304, t * 0.4 + 0.75);
+
+        drawNode(ctx, 44, 172, 206, 76, 'Exam Center Client', 'Biometric Capture & Batch', false, drawRoundedRect);
+        drawNode(ctx, 344, 172, 230, 76, 'Verification REST API', 'Java · Spring Boot', true, drawRoundedRect);
+        drawNode(ctx, 668, 172, 248, 76, 'AWS S3 Presigner', 'Scoped Time-Limited URLs', false, drawRoundedRect);
+
+        drawNode(ctx, 344, 304, 230, 76, 'Bulk Sync Coordinator', 'Idempotent Batch Manifests', false, drawRoundedRect);
+        drawNode(ctx, 668, 304, 248, 76, 'Amazon S3 Bucket', 'Direct Encrypted Sync', true, drawRoundedRect);
+
+        // Left structural summary card
+        drawNode(ctx, 44, 304, 206, 76, 'Integrity Check', 'Checksum & Payload Auth', false, drawRoundedRect);
+
+        // Code structure block
+        drawRoundedRect(ctx, 44, 418, W - 88, 138, 8);
+        ctx.fillStyle = 'rgba(4, 12, 9, 0.92)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(207, 238, 224, 0.16)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        const codeLines = [
+          '@PostMapping("/api/v1/sync/presigned-urls")',
+          'public BatchUploadResponse issuePresignedBatch(@Valid @RequestBody SyncManifest manifest) {',
+          '    List<PresignedSlot> slots = manifest.getItems().stream()',
+          '        .map(item -> s3Presigner.createPutUrl(bucket, item.key(), Duration.ofMinutes(10)))',
+          '        .toList();',
+          '    return new BatchUploadResponse(manifest.batchId(), slots);',
+          '}',
+        ];
+        ctx.font = '500 13px ui-monospace, SFMono-Regular, Menlo, monospace';
+        codeLines.forEach((line, i) => {
+          ctx.fillStyle = i === 0 ? 'rgba(207, 238, 224, 0.55)' : 'rgba(232, 247, 240, 0.88)';
+          ctx.fillText(line, 64, 448 + i * 17);
+        });
+      }
+
+      function drawPersonalProjectsWorkspace(ctx, W, H, t, drawRoundedRect) {
+        ctx.font = '800 22px "Inter Tight", sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('PERSONAL PROJECTS — Backend & Cloud Exploration', 44, 96);
+
+        ctx.font = '500 14px "Inter Tight", sans-serif';
+        ctx.fillStyle = 'rgba(207, 238, 224, 0.68)';
+        ctx.fillText('Engineering experiments across distributed backend APIs, cloud architecture & full-stack tooling', 44, 122);
+
+        const pillars = [
+          {
+            title: 'Scalable REST APIs',
+            sub: 'Java · Spring Boot · Clean Architecture',
+            desc: 'Modular service boundaries, validation, pagination & resilient error contracts.',
+          },
+          {
+            title: 'Cloud Infrastructure',
+            sub: 'AWS · Docker · Storage & Queues',
+            desc: 'Containerized deployments, object storage workflows & asynchronous messaging.',
+          },
+          {
+            title: 'Full-Stack Exploration',
+            sub: 'Modern Web · API Integration',
+            desc: 'Connecting reliable backend systems with responsive, focused user interfaces.',
+          },
+        ];
+
+        const activePulse = Math.floor(t * 0.55) % 3;
+        pillars.forEach((item, i) => {
+          const x = 44 + i * 296;
+          const y = 172;
+          const isHl = !state.prefersReducedMotion && i === activePulse;
+          drawRoundedRect(ctx, x, y, 278, 198, 8);
+          ctx.fillStyle = isHl ? 'rgba(26, 90, 64, 0.30)' : 'rgba(11, 31, 22, 0.86)';
+          ctx.fill();
+          ctx.lineWidth = isHl ? 1.5 : 1;
+          ctx.strokeStyle = isHl ? 'rgba(207, 238, 224, 0.58)' : 'rgba(207, 238, 224, 0.2)';
+          ctx.stroke();
+
+          ctx.font = '800 13px "Inter Tight", sans-serif';
+          ctx.fillStyle = 'rgba(207, 238, 224, 0.52)';
+          ctx.fillText(`0${i + 1}`, x + 18, y + 30);
+
+          ctx.font = '800 18px "Inter Tight", sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(item.title, x + 18, y + 60);
+
+          ctx.font = '600 12.5px "Inter Tight", sans-serif';
+          ctx.fillStyle = '#cfeee0';
+          ctx.fillText(item.sub, x + 18, y + 84);
+
+          // Wrap description cleanly into 2-3 lines
+          ctx.font = '400 13px "Inter Tight", sans-serif';
+          ctx.fillStyle = 'rgba(232, 247, 240, 0.74)';
+          const words = item.desc.split(' ');
+          let line = '';
+          let ly = y + 118;
+          words.forEach((word) => {
+            const test = line ? `${line} ${word}` : word;
+            if (ctx.measureText(test).width > 240) {
+              ctx.fillText(line, x + 18, ly);
+              line = word;
+              ly += 20;
+            } else {
+              line = test;
+            }
+          });
+          if (line) ctx.fillText(line, x + 18, ly);
+        });
+
+        // Bottom engineering identity bar
+        drawRoundedRect(ctx, 44, 412, W - 88, 136, 8);
+        ctx.fillStyle = 'rgba(4, 12, 9, 0.9)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(207, 238, 224, 0.16)';
+        ctx.stroke();
+
+        ctx.font = '700 13px ui-monospace, SFMono-Regular, Menlo, monospace';
+        ctx.fillStyle = 'rgba(207, 238, 224, 0.56)';
+        ctx.fillText('CORE ENGINEERING FOCUS', 66, 448);
+
+        ctx.font = '700 20px "Inter Tight", sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('SOFTWARE ENGINEER  |  JAVA  |  SPRING BOOT  |  MICROSERVICES  |  AWS', 66, 486);
+
+        ctx.font = '500 13.5px "Inter Tight", sans-serif';
+        ctx.fillStyle = 'rgba(207, 238, 224, 0.72)';
+        ctx.fillText('Code • Build • Deploy — Connect screenshots or GitHub previews in PORTFOLIO_ASSETS.projects', 66, 520);
+      }
+
+      /* =====================================================================
+         8. ENTRANCE ANIMATIONS (Web Animations API, 6-Step Sequence)
+         ===================================================================== */
+      function startBadgeIdleSway() {
+        if (state.prefersReducedMotion || isMobile()) return;
+        if (state.badgeIdleAnim) state.badgeIdleAnim.cancel();
+        state.badgeIdleAnim = els.badgePendulum.animate(
+          [
+            { transform: 'rotate(-1.8deg)' },
+            { transform: 'rotate(1.6deg)' },
+            { transform: 'rotate(-1.8deg)' },
+          ],
+          {
+            duration: 5200,
+            iterations: Infinity,
+            easing: 'ease-in-out',
+          }
+        );
+      }
+
+      function playHeroEntrance(isReturn = false) {
+        const reduced = state.prefersReducedMotion;
+        const navTags = [els.navProfile, els.navProjects, els.navContact, els.navHire];
+
+        if (reduced) {
+          navTags.forEach((el) => {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          });
+          els.heroWordmarkWrap.style.opacity = '1';
+          els.heroWordmarkWrap.style.transform = 'translateY(0)';
+          els.heroTagline.style.opacity = '1';
+          els.heroTagline.style.clipPath = 'inset(0 0% 0 0)';
+          els.badgeAnchor.style.opacity = '1';
+          els.badgeAnchor.style.transform = 'scale(0.365) translateY(0)';
+          els.heroBottomBar.classList.add('visible');
+          els.heroBottomBar.classList.remove('hidden-mode');
+          return;
+        }
+
+        // 1. Navigation tags enter with slight spring effect (on initial load)
+        if (!isReturn) {
+          navTags.forEach((tag, i) => {
+            tag.animate(
+              [
+                { opacity: 0, transform: 'translateY(-14px) scale(0.94)' },
+                { opacity: 1, transform: 'translateY(0) scale(1)' },
+              ],
+              {
+                duration: 560,
+                delay: 80 + i * 70,
+                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                fill: 'forwards',
+              }
+            );
+          });
+        }
+
+        // 2. DEEP SHAH wordmark rises into view
+        els.heroWordmarkWrap.animate(
+          [
+            { opacity: 0, transform: 'translateY(52px)' },
+            { opacity: 1, transform: 'translateY(0)' },
+          ],
+          {
+            duration: 780,
+            delay: isReturn ? 120 : 220,
+            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            fill: 'forwards',
+          }
+        );
+
+        // 3. Code • Build • Deploy writes on from left to right
+        els.heroTagline.animate(
+          [
+            { opacity: 0, clipPath: 'inset(0 100% 0 0)' },
+            { opacity: 1, clipPath: 'inset(0 65% 0 0)', offset: 0.25 },
+            { opacity: 1, clipPath: 'inset(0 0% 0 0)' },
+          ],
+          {
+            duration: 840,
+            delay: isReturn ? 280 : 480,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            fill: 'forwards',
+          }
+        );
+
+        // 4. Developer badge drops in and settles with pendulum swing
+        const badgeDrop = els.badgeAnchor.animate(
+          [
+            { opacity: 0, transform: 'scale(0.365) translateY(-480px)' },
+            { opacity: 1, transform: 'scale(0.365) translateY(24px)', offset: 0.68 },
+            { opacity: 1, transform: 'scale(0.365) translateY(0)' },
+          ],
+          {
+            duration: 900,
+            delay: isReturn ? 260 : 540,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            fill: 'forwards',
+          }
+        );
+
+        const swingSettle = els.badgePendulum.animate(
+          [
+            { transform: 'rotate(10deg)' },
+            { transform: 'rotate(-6.5deg)', offset: 0.36 },
+            { transform: 'rotate(3.5deg)', offset: 0.64 },
+            { transform: 'rotate(-1.8deg)' },
+          ],
+          {
+            duration: 1250,
+            delay: isReturn ? 260 : 540,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            fill: 'forwards',
+          }
+        );
+
+        // 5. Scroll hint fades in
+        setTimeout(() => {
+          if (state.mode === 'hero') {
+            els.heroBottomBar.classList.remove('hidden-mode');
+            els.heroBottomBar.classList.add('visible');
+          }
+        }, isReturn ? 340 : 880);
+
+        // 6. Badge idle sway begins after settle
+        swingSettle.onfinish = () => {
+          if (state.mode === 'hero') startBadgeIdleSway();
+        };
+        badgeDrop.onfinish = () => {};
+      }
+
+      /* =====================================================================
+         9. PROJECT CONTENT RENDERING & TICKET ANIMATIONS
+         ===================================================================== */
+      function renderProjectContent(index, animateSwap = false, direction = 1) {
+        const proj = PROJECTS[index];
+        if (!proj) return;
+
+        const updateDom = () => {
+          const counterText = `${proj.number} / 0${PROJECTS.length}`;
+          els.ticketIndex.textContent = counterText;
+          els.caseCounter.textContent = counterText;
+          els.ticketTitle.textContent = proj.title;
+
+          els.ticketRows.innerHTML = proj.rows
+            .map((row, i) => `<li data-idx="0${i + 1}">${row}</li>`)
+            .join('');
+
+          els.projectDescKey.textContent = proj.key;
+          els.projectDescCopy.textContent = proj.description;
+          els.projectTechList.innerHTML = proj.tech
+            .map((item) => `<span>${item}</span>`)
+            .join('<span class="sep" aria-hidden="true">&middot;</span>');
+
+          document.querySelectorAll('.screen-slide').forEach((slide, i) => {
+            slide.classList.toggle('is-active', i === index);
+          });
+          syncProjectVideos();
+        };
+
+        if (!animateSwap || state.prefersReducedMotion) {
+          updateDom();
+          return;
+        }
+
+        // Screen switch shutter flash
+        els.screenFlash.animate(
+          [{ opacity: 0 }, { opacity: 0.28, offset: 0.28 }, { opacity: 0 }],
+          { duration: 320, easing: 'ease-out' }
+        );
+
+        // Ticket & description exit then enter cleanly
+        const outShift = direction > 0 ? -24 : 24;
+        const inShift = direction > 0 ? 28 : -28;
+
+        const ticketExit = els.ticketCard.animate(
+          [
+            { opacity: 1, transform: 'translateY(0) rotate(0deg)' },
+            { opacity: 0, transform: `translateY(${outShift}px) rotate(${direction > 0 ? -2.5 : 2.5}deg)` },
+          ],
+          { duration: 180, easing: 'ease-in', fill: 'forwards' }
+        );
+
+        els.projectDescPanel.animate(
+          [
+            { opacity: 1, transform: isMobile() ? 'translateX(-50%) translateY(0)' : 'translateY(-48%)' },
+            { opacity: 0, transform: isMobile() ? `translateX(-50%) translateY(${outShift * 0.5}px)` : `translateY(calc(-48% + ${outShift * 0.5}px))` },
+          ],
+          { duration: 170, easing: 'ease-in', fill: 'forwards' }
+        );
+
+        ticketExit.onfinish = () => {
+          updateDom();
+          els.ticketCard.animate(
+            [
+              { opacity: 0, transform: `translateY(${inShift}px) rotate(${direction > 0 ? 2 : -2}deg)` },
+              { opacity: 1, transform: 'translateY(0) rotate(0deg)' },
+            ],
+            { duration: 360, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+          );
+          els.projectDescPanel.animate(
+            [
+              { opacity: 0, transform: isMobile() ? `translateX(-50%) translateY(${inShift * 0.45}px)` : `translateY(calc(-48% + ${inShift * 0.45}px))` },
+              { opacity: 1, transform: isMobile() ? 'translateX(-50%) translateY(0)' : 'translateY(-48%)' },
+            ],
+            { duration: 360, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+          );
+        };
+      }
+
+      /* =====================================================================
+         10. LAPTOP DIVE ANIMATION (Hero -> Case Mode, 1.7s Eased Curve)
+             Uses rAF eased playback-rate curve on `trans` video when available,
+             or a synchronized 1.7s 3D camera push-in + floating laptop rotation.
+         ===================================================================== */
+      function setInteractionLock(ms = INTERACTION_LOCK_MS) {
+        state.lockUntil = performance.now() + ms;
+      }
+
+      function isLocked() {
+        return state.busy || performance.now() < state.lockUntil;
+      }
+
+      function updateNavModeVisuals() {
+        const inCase = state.mode === 'case';
+        els.navProfile.classList.toggle('is-current', !inCase);
+        els.navProjects.classList.toggle('is-current', inCase);
+        els.navCenterLogo.classList.toggle('visible', inCase);
+        els.mobileHeroUI.classList.toggle('hidden-mode', inCase);
+        els.mobileBadgeClone.classList.toggle('hidden-mode', inCase);
+      }
+
+      function enterCaseMode(targetProject = 0) {
+        if (isLocked() || state.mode === 'case') return;
+        state.busy = true;
+        setInteractionLock(INTERACTION_LOCK_MS);
+        state.projectIndex = targetProject;
+
+        if (state.badgeIdleAnim) {
+          state.badgeIdleAnim.cancel();
+          state.badgeIdleAnim = null;
+        }
+
+        renderProjectContent(state.projectIndex, false);
+        els.heroBottomBar.classList.add('hidden-mode');
+        els.mobileHeroUI.classList.add('hidden-mode');
+        els.mobileBadgeClone.classList.add('hidden-mode');
+
+        // Reduced motion: skip video/camera dive and crossfade directly to laptop case
+        if (state.prefersReducedMotion) {
+          els.heroLayer.style.opacity = '0';
+          els.heroLayer.style.pointerEvents = 'none';
+          els.caseLayer.classList.add('active');
+          els.caseLayer.style.opacity = '1';
+          els.caseLayer.setAttribute('aria-hidden', 'false');
+          els.caseUI.classList.add('active');
+          els.caseUI.setAttribute('aria-hidden', 'false');
+          state.mode = 'case';
+          updateNavModeVisuals();
+          syncProjectVideos();
+          state.busy = false;
+          return;
+        }
+
+        // Hero exit animation
+        els.heroWordmarkWrap.animate(
+          [
+            { opacity: 1, transform: 'translateY(0)' },
+            { opacity: 0, transform: 'translateY(-44px)' },
+          ],
+          { duration: 360, easing: 'ease-in', fill: 'forwards' }
+        );
+        els.heroTagline.animate(
+          [
+            { opacity: 1, transform: 'rotate(-8deg) translateX(0)' },
+            { opacity: 0, transform: 'rotate(-8deg) translateX(-40px)' },
+          ],
+          { duration: 320, easing: 'ease-in', fill: 'forwards' }
+        );
+        els.badgeAnchor.animate(
+          [
+            { opacity: 1, transform: 'scale(0.365) translateY(0)' },
+            { opacity: 0, transform: 'scale(0.365) translateY(-280px)' },
+          ],
+          { duration: 360, easing: 'ease-in', fill: 'forwards' }
+        );
+
+        els.transLayer.classList.add('active');
+        els.transLayer.style.opacity = '1';
+
+        const finishDive = () => {
+          els.heroLayer.style.opacity = '0';
+          els.heroLayer.style.pointerEvents = 'none';
+          els.heroLayer.style.transform = 'none';
+          els.heroLayer.style.filter = 'none';
+
+          els.caseLayer.classList.add('active');
+          els.caseLayer.style.opacity = '1';
+          els.caseLayer.setAttribute('aria-hidden', 'false');
+
+          els.transLayer.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 280,
+            easing: 'ease-out',
+            fill: 'forwards',
+          }).onfinish = () => {
+            els.transLayer.classList.remove('active');
+            els.diveLaptop3d.style.opacity = '0';
+            els.diveStudioWash.style.opacity = '0';
+            els.transVideo.style.opacity = '0';
+          };
+
+          // Shutter wake flash on laptop display
+          els.screenFlash.animate(
+            [{ opacity: 0.45 }, { opacity: 0 }],
+            { duration: 380, easing: 'ease-out' }
+          );
+
+          // Ticket & Description spring entrance
+          els.caseUI.classList.add('active');
+          els.caseUI.setAttribute('aria-hidden', 'false');
+
+          els.ticketCard.animate(
+            [
+              { opacity: 0, transform: 'translateY(34px) rotate(-3deg) scale(0.95)' },
+              { opacity: 1, transform: 'translateY(0) rotate(0deg) scale(1)' },
+            ],
+            { duration: 540, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+          );
+
+          els.projectDescPanel.animate(
+            [
+              { opacity: 0, transform: isMobile() ? 'translateX(-50%) translateY(20px)' : 'translateY(calc(-48% + 22px))' },
+              { opacity: 1, transform: isMobile() ? 'translateX(-50%) translateY(0)' : 'translateY(-48%)' },
+            ],
+            { duration: 540, delay: 70, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+          );
+
+          state.mode = 'case';
+          updateNavModeVisuals();
+          syncProjectVideos();
+          state.busy = false;
+        };
+
+        // PATH A: Play real filmed ~5s transition video in ~1.7s via rAF eased playback-rate curve
+        if (PORTFOLIO_ASSETS.trans && state.transVideoReady && els.transVideo.duration > 0.5) {
+          const vid = els.transVideo;
+          vid.currentTime = 0;
+          vid.style.opacity = '1';
+          const clipDur = vid.duration || 5.0;
+          const baseScale = clipDur / (DIVE_DURATION_MS / 1000);
+          const start = performance.now();
+
+          vid.play().catch(() => {
+            runProceduralLaptopDive(finishDive);
+          });
+
+          const tickVideo = (now) => {
+            const p = Math.min(1, (now - start) / DIVE_DURATION_MS);
+            // Smooth bell-shaped speed curve: gentle launch -> swift cinematic push -> silky settle
+            const speedProfile = 0.55 + 1.35 * Math.sin(p * Math.PI);
+            const targetRate = Math.max(0.5, Math.min(6.0, baseScale * speedProfile * 0.72));
+            try { vid.playbackRate = targetRate; } catch (_e) {}
+
+            if (p >= 0.82) {
+              els.caseLayer.classList.add('active');
+              els.caseLayer.style.opacity = String((p - 0.82) / 0.18);
+            }
+            if (p < 1 && !vid.ended) {
+              state.activeDiveRaf = requestAnimationFrame(tickVideo);
+            } else {
+              vid.pause();
+              finishDive();
+            }
+          };
+          state.activeDiveRaf = requestAnimationFrame(tickVideo);
+          return;
+        }
+
+        // PATH B: Real-time 1.7s 3D Camera Push-In & Floating Silver Laptop Rotation
+        runProceduralLaptopDive(finishDive);
+      }
+
+      function runProceduralLaptopDive(onDone) {
+        const start = performance.now();
+        const mobile = isMobile();
+
+        const easeInOutCubic = (x) =>
+          x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        const easeOutQuart = (x) => 1 - Math.pow(1 - x, 4);
+
+        const step = (now) => {
+          const raw = Math.min(1, (now - start) / DIVE_DURATION_MS);
+          const eMove = easeInOutCubic(raw);
+          const eSettle = easeOutQuart(raw);
+
+          // 1. Camera pushes straight into the open silver laptop in Deep Shah's left hand
+          const heroScale = 1 + eMove * (mobile ? 1.15 : 1.52);
+          const heroBlur = raw < 0.55 ? raw * 14 : 7.7;
+          const heroOpacity = raw < 0.25 ? 1 : Math.max(0, 1 - (raw - 0.25) / 0.42);
+          els.heroLayer.style.transform = `scale(${heroScale.toFixed(4)})`;
+          els.heroLayer.style.filter = `blur(${heroBlur.toFixed(2)}px)`;
+          els.heroLayer.style.opacity = heroOpacity.toFixed(3);
+
+          // 2. Deep-green studio wash bridges hero to case plate lighting
+          const washOpacity = Math.min(1, raw / 0.55);
+          els.diveStudioWash.style.opacity = washOpacity.toFixed(3);
+
+          // 3. Silver laptop floats out of his hand, turns square to camera & fills view
+          const lapPhase = Math.max(0, Math.min(1, (raw - 0.16) / 0.72));
+          const lapEase = easeOutQuart(lapPhase);
+          const lapOpacity = Math.min(1, lapPhase * 2.4);
+
+          if (mobile) {
+            const tx = (1 - lapEase) * 46;
+            const ty = (1 - lapEase) * 42;
+            const sc = 0.54 + lapEase * 0.46;
+            const ry = (1 - lapEase) * -28;
+            els.diveLaptop3d.style.opacity = lapOpacity.toFixed(3);
+            els.diveLaptop3d.style.transform = `translateX(-50%) translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) perspective(1100px) rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(4)})`;
+          } else {
+            const tx = (1 - lapEase) * 235;
+            const ty = (1 - lapEase) * 142;
+            const sc = 0.36 + lapEase * 0.64;
+            const ry = (1 - lapEase) * -34;
+            const rx = (1 - lapEase) * 14;
+            const rz = (1 - lapEase) * -7;
+            els.diveLaptop3d.style.opacity = lapOpacity.toFixed(3);
+            els.diveLaptop3d.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) perspective(1400px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${sc.toFixed(4)})`;
+          }
+
+          // 4. Case plate crossfades cleanly in the final 24%
+          if (raw >= 0.74) {
+            const cp = (raw - 0.74) / 0.26;
+            els.caseLayer.classList.add('active');
+            els.caseLayer.style.opacity = eSettle > 0.99 ? '1' : cp.toFixed(3);
+          }
+
+          if (raw < 1) {
+            state.activeDiveRaf = requestAnimationFrame(step);
+          } else {
+            onDone();
+          }
+        };
+
+        state.activeDiveRaf = requestAnimationFrame(step);
+      }
+
+      /* =====================================================================
+         11. RETURN TO HERO (Blurred Zoom-Out Reveal + Plate & Cutout Restore)
+         ===================================================================== */
+      function returnToHero() {
+        if (isLocked() || state.mode === 'hero') return;
+        state.busy = true;
+        setInteractionLock(INTERACTION_LOCK_MS);
+
+        els.caseUI.classList.remove('active');
+        els.caseUI.setAttribute('aria-hidden', 'true');
+        els.navCenterLogo.classList.remove('visible');
+
+        if (state.prefersReducedMotion) {
+          els.caseLayer.style.opacity = '0';
+          els.caseLayer.classList.remove('active');
+          els.caseLayer.setAttribute('aria-hidden', 'true');
+          els.heroLayer.style.opacity = '1';
+          els.heroLayer.style.pointerEvents = 'auto';
+          els.heroLayer.style.transform = 'none';
+          els.heroLayer.style.filter = 'none';
+          state.mode = 'hero';
+          updateNavModeVisuals();
+          syncProjectVideos();
+          playHeroEntrance(true);
+          state.busy = false;
+          return;
+        }
+
+        // Restore hero layer underneath for blurred zoom-out reveal
+        els.heroLayer.style.pointerEvents = 'auto';
+        els.heroLayer.style.opacity = '0';
+        els.heroWordmarkWrap.style.opacity = '0';
+        els.heroTagline.style.opacity = '0';
+        els.badgeAnchor.style.opacity = '0';
+
+        // Case layer dissolves smoothly
+        const caseOut = els.caseLayer.animate(
+          [
+            { opacity: 1, transform: 'scale(1)', filter: 'blur(0px)' },
+            { opacity: 0, transform: 'scale(0.92)', filter: 'blur(8px)' },
+          ],
+          { duration: 520, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        );
+
+        // Hero plate blurred zoom-out reveal
+        const heroIn = els.heroLayer.animate(
+          [
+            { opacity: 0, transform: 'scale(1.16)', filter: 'blur(12px)' },
+            { opacity: 1, transform: 'scale(1)', filter: 'blur(0px)' },
+          ],
+          { duration: 680, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' }
+        );
+
+        // Cutout clean fade-in
+        els.heroCutCanvas.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: 520, delay: 140, easing: 'ease-out', fill: 'forwards' }
+        );
+
+        caseOut.onfinish = () => {
+          els.caseLayer.classList.remove('active');
+          els.caseLayer.style.opacity = '0';
+          els.caseLayer.style.transform = 'none';
+          els.caseLayer.style.filter = 'none';
+          els.caseLayer.setAttribute('aria-hidden', 'true');
+          caseOut.cancel();
+        };
+
+        heroIn.onfinish = () => {
+          els.heroLayer.style.opacity = '1';
+          els.heroLayer.style.transform = 'none';
+          els.heroLayer.style.filter = 'none';
+          heroIn.cancel();
+          state.mode = 'hero';
+          updateNavModeVisuals();
+          syncProjectVideos();
+          playHeroEntrance(true);
+          state.busy = false;
+        };
+      }
+
+      /* =====================================================================
+         12. PROJECT SWITCHING (Prev / Next with Wrap & Return-to-Hero on 01)
+         ===================================================================== */
+      function nextProject() {
+        if (isLocked()) return;
+        if (state.mode === 'hero') {
+          enterCaseMode(0);
+          return;
+        }
+        setInteractionLock(420);
+        state.projectIndex = (state.projectIndex + 1) % PROJECTS.length;
+        renderProjectContent(state.projectIndex, true, 1);
+      }
+
+      function prevProject() {
+        if (isLocked() || state.mode !== 'case') return;
+        if (state.projectIndex === 0) {
+          returnToHero();
+          return;
+        }
+        setInteractionLock(420);
+        state.projectIndex -= 1;
+        renderProjectContent(state.projectIndex, true, -1);
+      }
+
+      /* =====================================================================
+         13. CONTACT / HIRE ME DIALOG
+         ===================================================================== */
+      function openContactDialog(intent = 'contact') {
+        state.contactOpen = true;
+        els.contactEmailAddr.textContent = PORTFOLIO_ASSETS.contactEmail;
+        els.mailtoLink.href =
+          intent === 'hire'
+            ? `mailto:${PORTFOLIO_ASSETS.contactEmail}?subject=Hiring%20Inquiry%20%E2%80%94%20Java%20Backend%20Engineer`
+            : `mailto:${PORTFOLIO_ASSETS.contactEmail}?subject=Portfolio%20Inquiry`;
+
+        if (intent === 'hire') {
+          els.contactKicker.textContent = 'AVAILABLE FOR BACKEND ENGINEERING ROLES';
+          els.contactHeading.textContent = 'Hire Deep Shah';
+          els.contactCopy.textContent =
+            'Java Backend Software Engineer experienced with Spring Boot, Microservices, PostgreSQL, Redis, RabbitMQ, AWS S3, and Docker.';
+        } else {
+          els.contactKicker.textContent = 'DEEP SHAH · SOFTWARE ENGINEER';
+          els.contactHeading.textContent = 'Get in touch';
+          els.contactCopy.textContent =
+            'Reach out to discuss backend engineering roles, architecture collaboration, or Java / Spring Boot / AWS systems.';
+        }
+
+        els.contactBackdrop.classList.add('open');
+        els.contactBackdrop.setAttribute('aria-hidden', 'false');
+        els.contactClose.focus();
+      }
+
+      function closeContactDialog() {
+        state.contactOpen = false;
+        els.contactBackdrop.classList.remove('open');
+        els.contactBackdrop.setAttribute('aria-hidden', 'true');
+      }
+
+      /* =====================================================================
+         14. CAPTURED INTERACTIONS (Wheel, Touch Swipe, Keyboard, Clicks)
+         ===================================================================== */
+      // Wheel
+      let wheelAcc = 0;
+      let wheelResetTimer = null;
+
+      window.addEventListener(
+        'wheel',
+        (e) => {
+          if (state.contactOpen) return;
+          e.preventDefault();
+          if (isLocked()) return;
+
+          wheelAcc += e.deltaY;
+          clearTimeout(wheelResetTimer);
+          wheelResetTimer = setTimeout(() => { wheelAcc = 0; }, 140);
+
+          if (wheelAcc > 28) {
+            wheelAcc = 0;
+            if (state.mode === 'hero') enterCaseMode(0);
+            else nextProject();
+          } else if (wheelAcc < -28) {
+            wheelAcc = 0;
+            if (state.mode === 'case') prevProject();
+          }
+        },
+        { passive: false }
+      );
+
+      // Touch Swipes
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchTracking = false;
+
+      window.addEventListener(
+        'touchstart',
+        (e) => {
+          if (state.contactOpen || e.touches.length !== 1) return;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchTracking = true;
+        },
+        { passive: true }
+      );
+
+      window.addEventListener(
+        'touchend',
+        (e) => {
+          if (!touchTracking || state.contactOpen || isLocked()) return;
+          touchTracking = false;
+          const touch = e.changedTouches[0];
+          const dx = touch.clientX - touchStartX;
+          const dy = touch.clientY - touchStartY;
+          const absX = Math.abs(dx);
+          const absY = Math.abs(dy);
+
+          if (Math.max(absX, absY) < 38) return;
+
+          if (state.mode === 'hero') {
+            // Swipe up enters laptop dive
+            if (absY > absX && dy < -38) {
+              enterCaseMode(0);
+            }
+          } else {
+            // In case mode: swipe left/up -> next, swipe right/down -> prev
+            if (absX >= absY) {
+              if (dx < -38) nextProject();
+              else if (dx > 38) prevProject();
+            } else {
+              if (dy < -42) nextProject();
+              else if (dy > 42) prevProject();
+            }
+          }
+        },
+        { passive: true }
+      );
+
+      // Keyboard
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (state.contactOpen) {
+            closeContactDialog();
+            return;
+          }
+          if (state.mode === 'case') {
+            returnToHero();
+          }
+          return;
+        }
+
+        if (state.contactOpen) return;
+
+        // Ignore if user focused a button and presses Space/Enter natively
+        const tag = document.activeElement?.tagName;
+        const isInteractiveEl = tag === 'BUTTON' || tag === 'A';
+
+        if (state.mode === 'hero') {
+          if (
+            e.key === 'ArrowDown' ||
+            e.key === 'PageDown' ||
+            (e.key === ' ' && !isInteractiveEl)
+          ) {
+            e.preventDefault();
+            enterCaseMode(0);
+          }
+        } else {
+          if (
+            e.key === 'ArrowRight' ||
+            e.key === 'ArrowDown' ||
+            e.key === 'PageDown' ||
+            (e.key === ' ' && !isInteractiveEl)
+          ) {
+            e.preventDefault();
+            nextProject();
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault();
+            prevProject();
+          }
+        }
+      });
+
+      // Button Clicks
+      els.navProfile.addEventListener('click', () => {
+        if (state.mode === 'case') {
+          returnToHero();
+        } else {
+          // Subtle swing acknowledgement on hero
+          if (!state.prefersReducedMotion && !isMobile()) {
+            els.badgePendulum.animate(
+              [
+                { transform: 'rotate(0deg)' },
+                { transform: 'rotate(-5deg)', offset: 0.35 },
+                { transform: 'rotate(3deg)', offset: 0.7 },
+                { transform: 'rotate(0deg)' },
+              ],
+              { duration: 760, easing: 'ease-out' }
+            );
+          }
+        }
+      });
+
+      els.navProjects.addEventListener('click', () => {
+        if (state.mode === 'hero') enterCaseMode(0);
+        else nextProject();
+      });
+
+      els.navCenterLogo.addEventListener('click', returnToHero);
+      els.scrollHintBtn.addEventListener('click', () => enterCaseMode(0));
+      els.heroLaptopHotspot.addEventListener('click', () => enterCaseMode(0));
+
+      els.btnPrev.addEventListener('click', prevProject);
+      els.btnNext.addEventListener('click', nextProject);
+
+      els.laptopScreenSlot.addEventListener('click', nextProject);
+      els.laptopScreenSlot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          nextProject();
+        }
+      });
+
+      els.navContact.addEventListener('click', () => openContactDialog('contact'));
+      els.navHire.addEventListener('click', () => openContactDialog('hire'));
+
+      const openBadgeContact = () => openContactDialog('contact');
+      els.badgePendulum.addEventListener('click', openBadgeContact);
+      els.badgePendulum.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openBadgeContact();
+        }
+      });
+      els.mobileBadgeClone.addEventListener('click', openBadgeContact);
+      els.mobileBadgeClone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openBadgeContact();
+        }
+      });
+
+      els.contactClose.addEventListener('click', closeContactDialog);
+      els.contactBackdrop.addEventListener('click', (e) => {
+        if (e.target === els.contactBackdrop) closeContactDialog();
+      });
+
+      els.contactViewWork.addEventListener('click', () => {
+        closeContactDialog();
+        if (state.mode === 'hero') enterCaseMode(0);
+      });
+
+      els.copyEmailBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(PORTFOLIO_ASSETS.contactEmail);
+          els.copyEmailBtn.textContent = 'Copied!';
+        } catch (_e) {
+          els.copyEmailBtn.textContent = PORTFOLIO_ASSETS.contactEmail;
+        }
+        setTimeout(() => {
+          els.copyEmailBtn.textContent = 'Copy email';
+        }, 1800);
+      });
+
+      /* =====================================================================
+         15. ASSET READINESS GUARDS, FAILSAFE & BOOTSTRAP
+         ===================================================================== */
+      function waitForImage(img) {
+        return new Promise((resolve) => {
+          if (!img) return resolve();
+          if (img.complete && img.naturalWidth > 0) return resolve();
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+        });
+      }
+
+      async function boot() {
+        setupProjectScreens();
+        renderProjectContent(0, false);
+        preloadTransitionVideo();
+        startProjectScreenLoop();
+
+        const heroReady = waitForImage(els.heroPlate).then(() => {
+          buildHeroCutout(els.heroPlate);
+        });
+        const caseReady = waitForImage(els.casePlate).then(() => {
+          calibrateLaptopScreenSlot(els.casePlate);
+        });
+        const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+
+        // Failsafe ensures entrance ALWAYS triggers cleanly even on slow fonts/network
+        const failsafe = new Promise((resolve) => setTimeout(resolve, 1400));
+
+        await Promise.race([Promise.all([heroReady, fontsReady]), failsafe]);
+
+        if (!state.entered) {
+          state.entered = true;
+          playHeroEntrance(false);
+        }
+
+        // Ensure casePlate calibration finishes even if it arrived after failsafe
+        caseReady.catch(() => {});
+      }
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
